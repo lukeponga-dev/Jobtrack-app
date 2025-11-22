@@ -49,7 +49,7 @@ export default function ApplicationsClient({
       .filter(app => (activeTab === 'all' ? true : app.status === activeTab))
       .filter(
         app =>
-          app.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          app.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
           app.position.toLowerCase().includes(searchTerm.toLowerCase())
       );
   }, [applications, activeTab, searchTerm]);

@@ -1,9 +1,9 @@
 'use client';
 
-import {useForm} from 'react-hook-form';
-import {zodResolver} from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import {Button} from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import {Input} from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -28,20 +28,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {Textarea} from '@/components/ui/textarea';
-import {useToast} from '@/hooks/use-toast';
-import type {ApplicationStatus} from '@/lib/types';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import { useFirebase, addDocumentNonBlocking } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
 const formSchema = z.object({
-  company: z.string().min(2, {message: 'Company name is required.'}),
-  position: z.string().min(2, {message: 'Position is required.'}),
-  jobUrl: z.string().url({message: 'Please enter a valid URL.'}).optional().or(z.literal('')),
-  dateApplied: z.date({required_error: 'Date applied is required.'}),
+  companyName: z.string().min(2, { message: 'Company name is required.' }),
+  position: z.string().min(2, { message: 'Position is required.' }),
+  applicationDate: z.date({ required_error: 'Date applied is required.' }),
   status: z.enum(['applied', 'interview', 'offer', 'rejected']),
   notes: z.string().optional(),
 });
@@ -51,24 +51,43 @@ type AddApplicationDialogProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-export function AddApplicationDialog({open, onOpenChange}: AddApplicationDialogProps) {
-  const {toast} = useToast();
+export function AddApplicationDialog({ open, onOpenChange }: AddApplicationDialogProps) {
+  const { toast } = useToast();
+  const { firestore, user } = useFirebase();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      company: '',
+      companyName: '',
       position: '',
-      jobUrl: '',
       status: 'applied',
       notes: '',
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!firestore || !user) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'You must be logged in to add an application.',
+      });
+      return;
+    }
+
+    const applicationData = {
+      ...values,
+      applicationDate: values.applicationDate.toISOString(),
+      userId: user.uid,
+    };
+
+    const applicationsCollectionRef = collection(firestore, 'users', user.uid, 'applications');
+    
+    addDocumentNonBlocking(applicationsCollectionRef, applicationData);
+
     toast({
       title: 'Application Added',
-      description: `Your application for ${values.position} at ${values.company} has been saved.`,
+      description: `Your application for ${values.position} at ${values.companyName} has been saved.`,
     });
     onOpenChange(false);
     form.reset();
@@ -87,8 +106,8 @@ export function AddApplicationDialog({open, onOpenChange}: AddApplicationDialogP
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="company"
-              render={({field}) => (
+              name="companyName"
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Company</FormLabel>
                   <FormControl>
@@ -101,7 +120,7 @@ export function AddApplicationDialog({open, onOpenChange}: AddApplicationDialogP
             <FormField
               control={form.control}
               name="position"
-              render={({field}) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Position</FormLabel>
                   <FormControl>
@@ -111,9 +130,9 @@ export function AddApplicationDialog({open, onOpenChange}: AddApplicationDialogP
                 </FormItem>
               )}
             />
-             <FormField
+            <FormField
               control={form.control}
-              name="dateApplied"
+              name="applicationDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Date Applied</FormLabel>
@@ -121,14 +140,14 @@ export function AddApplicationDialog({open, onOpenChange}: AddApplicationDialogP
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"outline"}
+                          variant={'outline'}
                           className={cn(
-                            "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            'w-full pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground'
                           )}
                         >
                           {field.value ? (
-                            format(field.value, "PPP")
+                            format(field.value, 'PPP')
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -142,7 +161,7 @@ export function AddApplicationDialog({open, onOpenChange}: AddApplicationDialogP
                         selected={field.value}
                         onSelect={field.onChange}
                         disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
+                          date > new Date() || date < new Date('1900-01-01')
                         }
                         initialFocus
                       />
@@ -155,7 +174,7 @@ export function AddApplicationDialog({open, onOpenChange}: AddApplicationDialogP
             <FormField
               control={form.control}
               name="status"
-              render={({field}) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
                   <Select
@@ -181,7 +200,7 @@ export function AddApplicationDialog({open, onOpenChange}: AddApplicationDialogP
             <FormField
               control={form.control}
               name="notes"
-              render={({field}) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
@@ -191,9 +210,9 @@ export function AddApplicationDialog({open, onOpenChange}: AddApplicationDialogP
                 </FormItem>
               )}
             />
-             <DialogFooter>
-               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-               <Button type="submit">Save Application</Button>
+            <DialogFooter>
+              <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
+              <Button type="submit">Save Application</Button>
             </DialogFooter>
           </form>
         </Form>

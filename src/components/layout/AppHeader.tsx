@@ -12,11 +12,28 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Button} from '@/components/ui/button';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
-import {LogOut, User} from 'lucide-react';
-import {PlaceHolderImages} from '@/lib/placeholder-images';
+import {LogOut, User, LogIn} from 'lucide-react';
+import { useFirebase } from '@/firebase';
+import { signOut } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 export default function AppHeader() {
-  const userAvatar = PlaceHolderImages.find(img => img.id === 'user-avatar');
+  const { auth, user } = useFirebase();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/login');
+  };
+
+  const userAvatar = user?.photoURL;
+  const userName = user?.displayName;
+  const userInitials = userName
+    ? userName
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+    : 'U';
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background/80 px-4 backdrop-blur-md md:justify-end md:px-6">
@@ -28,25 +45,34 @@ export default function AppHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={userAvatar?.imageUrl} alt="User Avatar" />
-                <AvatarFallback>JD</AvatarFallback>
+                {userAvatar && <AvatarImage src={userAvatar} alt="User Avatar" />}
+                <AvatarFallback>{userInitials}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/login">
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-              </Link>
-            </DropdownMenuItem>
+            {user ? (
+              <>
+                <DropdownMenuLabel>{userName || 'My Account'}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <DropdownMenuItem asChild>
+                <Link href="/login">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  <span>Log in</span>
+                </Link>
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

@@ -21,6 +21,7 @@ import {Badge} from '@/components/ui/badge';
 import {MoreHorizontal} from 'lucide-react';
 import type {Application} from '@/lib/types';
 import {badgeVariants} from '../ui/badge';
+import { format } from 'date-fns';
 
 const statusVariantMap: Record<
   Application['status'],
@@ -64,18 +65,18 @@ export function ApplicationTable({
                 {app.companyLogo && (
                   <Image
                     src={app.companyLogo}
-                    alt={`${app.company} logo`}
+                    alt={`${app.companyName} logo`}
                     width={40}
                     height={40}
                     className="rounded-full"
                     data-ai-hint="company logo"
                   />
                 )}
-                <span className="truncate">{app.company}</span>
+                <span className="truncate">{app.companyName}</span>
               </div>
             </TableCell>
             <TableCell className="truncate">{app.position}</TableCell>
-            <TableCell>{app.dateApplied}</TableCell>
+            <TableCell>{format(new Date(app.applicationDate), 'PPP')}</TableCell>
             <TableCell>
               <Badge variant={statusVariantMap[app.status]} className="capitalize">
                 {app.status}

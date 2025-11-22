@@ -19,6 +19,7 @@ import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
 import {MoreVertical} from 'lucide-react';
 import type {Application} from '@/lib/types';
+import { format } from 'date-fns';
 
 const statusVariantMap: Record<
   Application['status'],
@@ -38,7 +39,7 @@ export function ApplicationCard({application}: {application: Application}) {
           {application.companyLogo && (
             <Image
               src={application.companyLogo}
-              alt={`${application.company} logo`}
+              alt={`${application.companyName} logo`}
               width={40}
               height={40}
               className="rounded-lg"
@@ -46,7 +47,7 @@ export function ApplicationCard({application}: {application: Application}) {
             />
           )}
           <div className="grid gap-1">
-            <CardTitle className="truncate text-lg">{application.company}</CardTitle>
+            <CardTitle className="truncate text-lg">{application.companyName}</CardTitle>
             <CardDescription className="truncate">
               {application.position}
             </CardDescription>
@@ -74,7 +75,7 @@ export function ApplicationCard({application}: {application: Application}) {
           {application.status}
         </Badge>
         <div className="text-sm text-muted-foreground">
-          {application.dateApplied}
+          {format(new Date(application.applicationDate), 'PPP')}
         </div>
       </CardFooter>
     </Card>

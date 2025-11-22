@@ -1,10 +1,20 @@
 'use client';
 
 import * as React from 'react';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
-import {Label} from '@/components/ui/label';
-import {Separator} from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/firebase';
+import {
+  initiateEmailSignIn,
+  initiateEmailSignUp,
+} from '@/firebase/non-blocking-login';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
 
 const GoogleIcon = () => (
   <svg role="img" viewBox="0 0 24 24" className="mr-2 h-4 w-4">
@@ -26,14 +36,52 @@ const AppleIcon = () => (
 
 export function UserAuthForm() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isSigningUp, setIsSigningUp] = React.useState(false);
+  const auth = useAuth();
+  const { toast } = useToast();
+  const router = useRouter();
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
+    const form = event.target as HTMLFormElement;
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+
+    try {
+      if (isSigningUp) {
+        initiateEmailSignUp(auth, email, password);
+      } else {
+        initiateEmailSignIn(auth, email, password);
+      }
+      router.push('/');
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Authentication Failed',
+        description: error.message,
+      });
+    } finally {
       setIsLoading(false);
-    }, 3000);
+    }
   }
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      router.push('/');
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Google Sign-In Failed',
+        description: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="grid gap-6">
@@ -43,6 +91,7 @@ export function UserAuthForm() {
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="name@example.com"
               autoCapitalize="none"
@@ -53,14 +102,24 @@ export function UserAuthForm() {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" disabled={isLoading} />
+            <Input id="password" name="password" type="password" disabled={isLoading} />
           </div>
           <Button disabled={isLoading}>
-            {/* Add spinner icon when loading */}
-            Sign In with Email
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isSigningUp ? 'Sign Up with Email' : 'Sign In with Email'}
           </Button>
         </div>
       </form>
+      <Button
+        variant="link"
+        size="sm"
+        className="mx-auto -mt-2"
+        onClick={() => setIsSigningUp(!isSigningUp)}
+      >
+        {isSigningUp
+          ? 'Already have an account? Sign In'
+          : "Don't have an account? Sign Up"}
+      </Button>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <Separator />
@@ -72,10 +131,11 @@ export function UserAuthForm() {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <Button variant="outline" type="button" disabled={isLoading}>
+        <Button variant="outline" type="button" disabled={isLoading} onClick={handleGoogleSignIn}>
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           <GoogleIcon /> Google
         </Button>
-        <Button variant="outline" type="button" disabled={isLoading}>
+        <Button variant="outline" type="button" disabled={true}>
           <AppleIcon /> Apple
         </Button>
       </div>

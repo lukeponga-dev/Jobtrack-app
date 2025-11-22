@@ -15,12 +15,13 @@ export type Attachment = {
 
 export type Application = {
   id: string;
-  company: string;
+  companyName: string;
   position: string;
   status: ApplicationStatus;
-  dateApplied: string;
+  applicationDate: string;
   companyLogo?: string;
   jobUrl?: string;
   notes?: Note[];
   attachments?: Attachment[];
+  userId: string;
 };
