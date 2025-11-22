@@ -1,0 +1,132 @@
+/**
+ * Core Philosophy: This ruleset enforces a strict user-ownership model. All user-generated
+ * content (applications, resumes, cover letters) is stored in subcollections nested under
+ * a user's unique document, ensuring data privacy and preventing users from accessing
+ * each other's information.
+ *
+ * Data Structure: The entire data model is hierarchical, starting with a top-level `/users`
+ * collection. Each user's document at `/users/{userId}` serves as the root for their
+ * private data subcollections: `/applications`, `/resumeFeedback`, and `/coverLetters`.
+ * This structure makes ownership checks simple and performant by leveraging the document path.
+ *
+ * Key Security Decisions:
+ * - User data is strictly private. A user can only access documents within their own
+ *   path (e.g., `/users/{their-own-userId}/...`).
+ * - Listing the top-level `/users` collection is explicitly disallowed to prevent user enumeration.
+ * - The default security posture is deny-all. Access is only granted through explicit allow rules.
+ * - Data schemas are not strictly enforced to allow for rapid prototyping, but relational
+ *   integrity (e.g., ensuring `userId` fields match the document path) is enforced on writes.
+ *
+ * Denormalization for Authorization: The hierarchical structure `/users/{userId}/...` is the primary
+ * method of authorization. By placing a user's data in a subcollection under their own user ID,
+ * we avoid costly `get()` calls to check ownership. Each subcollection document also contains
+ * a `userId` field, which is validated on write operations to ensure a permanent and immutable
+ * link to the parent user.
+ *
+ * Structural Segregation: This ruleset exclusively uses structural segregation. There are no
+ * collections that mix public and private data. All data is inherently private to the user
+ * who owns the data tree, making list queries secure by default.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ------------------------------------------------------------------------
+    // Helper Functions
+    // ------------------------------------------------------------------------
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the authenticated user's UID matches the provided userId.
+     * This is the primary function for verifying document ownership.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks for ownership on an existing document. Used for update and delete
+     * operations to prevent acting on documents that do not exist.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    // ------------------------------------------------------------------------
+    // Collection Rules
+    // ------------------------------------------------------------------------
+
+    /**
+     * @description Manages user profile documents.
+     * @path /users/{userId}
+     * @allow A user (auth.uid='user123') can CREATE their own profile document at `/users/user123`.
+     * @allow An authenticated user (auth.uid='user123') can GET or UPDATE their own profile.
+     * @deny A user cannot GET another user's profile (`/users/otherUser`).
+     * @deny Anonymous users cannot access any user profiles.
+     * @deny Listing the `/users` collection is forbidden to prevent user enumeration.
+     * @principle Enforces self-creation and ownership for a user's root document. Validates that the document's internal `id` matches the path `userId` on creation and remains immutable on update.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Manages a user's private job applications.
+     * @path /users/{userId}/applications/{applicationId}
+     * @allow A user (auth.uid='user123') can CREATE, GET, UPDATE, DELETE, and LIST their own applications under `/users/user123/applications`.
+     * @deny A user (auth.uid='user123') cannot access applications under another user's path (`/users/otherUser/applications`).
+     * @deny Anonymous users cannot access any applications.
+     * @principle Restricts all access to a user's own data tree. Validates that the `userId` field within the document correctly links to the parent user path.
+     */
+    match /users/{userId}/applications/{applicationId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Manages a user's private AI-generated resume feedback.
+     * @path /users/{userId}/resumeFeedback/{resumeFeedbackId}
+     * @allow A user (auth.uid='user123') can CREATE, GET, UPDATE, DELETE, and LIST their own resume feedback under `/users/user123/resumeFeedback`.
+     * @deny A user (auth.uid='user123') cannot access feedback under another user's path (`/users/otherUser/resumeFeedback`).
+     * @deny Anonymous users cannot access any resume feedback.
+     * @principle Restricts all access to a user's own data tree. Validates that the `userId` field within the document correctly links to the parent user path.
+     */
+    match /users/{userId}/resumeFeedback/{resumeFeedbackId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Manages a user's private AI-generated cover letters.
+     * @path /users/{userId}/coverLetters/{coverLetterId}
+     * @allow A user (auth.uid='user123') can CREATE, GET, UPDATE, DELETE, and LIST their own cover letters under `/users/user123/coverLetters`.
+     * @deny A user (auth.uid='user123') cannot access cover letters under another user's path (`/users/otherUser/coverLetters`).
+     * @deny Anonymous users cannot access any cover letters.
+     * @principle Restricts all access to a user's own data tree. Validates that the `userId` field within the document correctly links to the parent user path.
+     */
+    match /users/{userId}/coverLetters/{coverLetterId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+  }
+}
