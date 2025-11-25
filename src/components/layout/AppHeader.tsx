@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {SidebarTrigger} from '@/components/ui/sidebar';
+import {SidebarTrigger} from '../ui/sidebar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,11 +9,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {Button} from '@/components/ui/button';
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
+} from '../ui/dropdown-menu';
+import {Button} from '../ui/button';
+import {Avatar, AvatarFallback, AvatarImage} from '../ui/avatar';
 import {LogOut, User, LogIn} from 'lucide-react';
-import { useFirebase } from '@/firebase';
+import { useFirebase } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 

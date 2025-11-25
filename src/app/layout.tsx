@@ -1,10 +1,10 @@
 import type {Metadata} from 'next';
 import './globals.css';
-import {SidebarProvider, SidebarInset} from '@/components/ui/sidebar';
-import AppSidebar from '@/components/layout/AppSidebar';
-import AppHeader from '@/components/layout/AppHeader';
-import {Toaster} from '@/components/ui/toaster';
-import { FirebaseClientProvider } from '@/firebase';
+import {SidebarProvider, SidebarInset} from '../components/ui/sidebar';
+import AppSidebar from '../components/layout/AppSidebar';
+import AppHeader from '../components/layout/AppHeader';
+import {Toaster} from '../components/ui/toaster';
+import { FirebaseClientProvider } from '../firebase';
 
 export const metadata: Metadata = {
   title: 'JobTrack App',

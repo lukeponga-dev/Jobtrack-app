@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '../ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,12 +14,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {Checkbox} from '@/components/ui/checkbox';
-import {Button} from '@/components/ui/button';
-import {Badge} from '@/components/ui/badge';
+} from '../ui/dropdown-menu';
+import {Checkbox} from '../ui/checkbox';
+import {Button} from '../ui/button';
+import {Badge} from '../ui/badge';
 import {MoreHorizontal} from 'lucide-react';
-import type {Application} from '@/lib/types';
+import type {Application} from '../../lib/types';
 import {badgeVariants} from '../ui/badge';
 import { format } from 'date-fns';
 

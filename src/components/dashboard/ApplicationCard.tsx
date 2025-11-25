@@ -6,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '../ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,11 +14,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {Button} from '@/components/ui/button';
-import {Badge} from '@/components/ui/badge';
+} from '../ui/dropdown-menu';
+import {Button} from '../ui/button';
+import {Badge} from '../ui/badge';
 import {MoreVertical} from 'lucide-react';
-import type {Application} from '@/lib/types';
+import type {Application} from '../../lib/types';
 import { format } from 'date-fns';
 
 const statusVariantMap: Record<

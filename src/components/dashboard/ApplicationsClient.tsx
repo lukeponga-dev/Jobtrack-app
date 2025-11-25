@@ -2,16 +2,16 @@
 
 import * as React from 'react';
 import {MoreHorizontal, PlusCircle, Search} from 'lucide-react';
-import {useIsMobile} from '@/hooks/use-mobile';
-import type {Application, ApplicationStatus} from '@/lib/types';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
+import {useIsMobile} from '../../hooks/use-mobile';
+import type {Application, ApplicationStatus} from '../../lib/types';
+import {Button} from '../ui/button';
+import {Input} from '../ui/input';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@/components/ui/tabs';
+} from '../ui/tabs';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +19,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '../ui/dropdown-menu';
 import {ApplicationTable} from './ApplicationTable';
 import {ApplicationCards} from './ApplicationCards';
 import {AddApplicationDialog} from './AddApplicationDialog';

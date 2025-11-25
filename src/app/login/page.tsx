@@ -1,11 +1,11 @@
-import {UserAuthForm} from '@/components/auth/UserAuthForm';
+import {UserAuthForm} from '../../components/auth/UserAuthForm';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from '@/components/ui/card';
+} from '../../components/ui/card';
 
 export default function LoginPage() {
   return (

@@ -2,14 +2,14 @@
 
 import * as React from 'react';
 import {CheckCircle, Lightbulb, Loader2, Upload, XCircle} from 'lucide-react';
-import {Button} from '@/components/ui/button';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
-import {getResumeFeedback} from '@/ai/flows/resume-feedback';
-import type {ResumeFeedbackOutput} from '@/ai/flows/resume-feedback';
-import {Progress} from '@/components/ui/progress';
-import {Badge} from '@/components/ui/badge';
-import {useToast} from '@/hooks/use-toast';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {Button} from '../../components/ui/button';
+import {Card, CardContent, CardHeader, CardTitle} from '../../components/ui/card';
+import {getResumeFeedback} from '../../ai/flows/resume-feedback';
+import type {ResumeFeedbackOutput} from '../../ai/flows/resume-feedback';
+import {Progress} from '../../components/ui/progress';
+import {Badge} from '../../components/ui/badge';
+import {useToast} from '../../hooks/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '../../components/ui/alert';
 
 const fileToDataUri = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {

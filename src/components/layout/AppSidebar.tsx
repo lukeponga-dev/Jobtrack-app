@@ -11,8 +11,8 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-} from '@/components/ui/sidebar';
-import {Logo} from '@/components/Logo';
+} from '../ui/sidebar';
+import {Logo} from '../Logo';
 
 const menuItems = [
   {href: '/', label: 'Dashboard', icon: LayoutGrid},

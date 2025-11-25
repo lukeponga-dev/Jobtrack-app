@@ -3,9 +3,9 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from '@/components/ui/card';
+} from '../ui/card';
 import {Briefcase, FileCheck, FileClock, Trophy, XCircle} from 'lucide-react';
-import type {Application, ApplicationStatus} from '@/lib/types';
+import type {Application, ApplicationStatus} from '../../lib/types';
 
 export function DashboardStats({applications}: {applications: Application[]}) {
   const getCount = (status?: ApplicationStatus) => {
