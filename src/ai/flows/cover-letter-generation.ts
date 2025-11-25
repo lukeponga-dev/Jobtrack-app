@@ -39,19 +39,21 @@ const prompt = ai.definePrompt({
   name: 'coverLetterPrompt',
   input: {schema: CoverLetterInputSchema},
   output: {schema: CoverLetterOutputSchema},
-  prompt: `You are an expert cover letter writer.
+  prompt: `You are an expert career coach specializing in writing highly effective cover letters.
 
-  Given the following resume and job description, write a cover letter with the specified tone.
+Your task is to create a compelling cover letter based on the provided resume and job description. The primary goal is to highlight the alignment between the candidate's skills and experience (from the resume) and the specific requirements of the job (from the job description).
 
-  Resume:
-  {{resumeText}}
+Analyze both documents and write a cover letter in the specified tone. Be sure to weave in specific examples from the resume that demonstrate the candidate's qualifications for the role.
 
-  Job Description:
-  {{jobDescription}}
+Resume:
+{{resumeText}}
 
-  Tone: {{tone}}
+Job Description:
+{{jobDescription}}
 
-  Cover Letter:`, // No need to escape backticks here
+Tone: {{tone}}
+
+Generate the cover letter now.`,
 });
 
 const generateCoverLetterFlow = ai.defineFlow(
