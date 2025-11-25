@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import {MoreHorizontal, PlusCircle, Search, Upload} from 'lucide-react';
-import {useIsMobile} from '../../hooks/use-mobile';
 import type {Application, ApplicationStatus} from '../../lib/types';
 import {Button} from '../ui/button';
 import {Input} from '../ui/input';
@@ -15,7 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import {ApplicationTable} from './ApplicationTable';
 import {ApplicationCards} from './ApplicationCards';
 import {AddApplicationDialog} from './AddApplicationDialog';
 import {DeleteApplicationDialog} from './DeleteApplicationDialog';
@@ -39,7 +37,6 @@ export default function ApplicationsClient({
 }: {
   applications: Application[];
 }) {
-  const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = React.useState<ApplicationStatus | 'all'>(
     'all'
   );
@@ -104,20 +101,12 @@ export default function ApplicationsClient({
   }
 
   const renderContent = () => {
-    if (isMobile) {
-      return (
-        <ApplicationCards
-          applications={filteredApps}
-          onDelete={handleDeleteClick}
-          onEdit={handleEditClick}
-        />
-      );
-    }
     return (
-      <ApplicationTable
+      <ApplicationCards
         applications={filteredApps}
         onDelete={handleDeleteClick}
         onEdit={handleEditClick}
+        onAdd={() => setIsAddDialogOpen(true)}
       />
     );
   };

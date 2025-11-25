@@ -17,7 +17,7 @@ import {
 } from '../ui/dropdown-menu';
 import {Button} from '../ui/button';
 import {Badge} from '../ui/badge';
-import {MoreVertical} from 'lucide-react';
+import {Building, MoreVertical} from 'lucide-react';
 import type {Application} from '../../lib/types';
 import {format} from 'date-fns';
 
@@ -41,18 +41,22 @@ export function ApplicationCard({
   onEdit: (application: Application) => void;
 }) {
   return (
-    <Card>
+    <Card className="flex flex-col">
       <CardHeader className="flex flex-row items-start justify-between gap-4">
         <div className="flex items-center gap-4">
-          {application.companyLogo && (
+          {application.companyLogoUrl ? (
             <Image
-              src={application.companyLogo}
+              src={application.companyLogoUrl}
               alt={`${application.companyName} logo`}
               width={40}
               height={40}
-              className="rounded-lg"
+              className="rounded-lg border"
               data-ai-hint="company logo"
             />
+          ): (
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg border bg-muted">
+              <Building className="h-5 w-5 text-muted-foreground" />
+            </div>
           )}
           <div className="grid gap-1">
             <CardTitle className="truncate text-lg">
@@ -65,7 +69,7 @@ export function ApplicationCard({
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="-my-2 -mr-2">
+            <Button variant="ghost" size="icon" className="-my-2 -mr-2 flex-shrink-0">
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -85,7 +89,7 @@ export function ApplicationCard({
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="mt-auto flex justify-between">
         <Badge
           variant={statusVariantMap[application.status]}
           className="capitalize"
