@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -99,7 +100,9 @@ export function ApplicationTable({
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href={`/application/${app.id}`}>View Details</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Edit</DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-destructive"
