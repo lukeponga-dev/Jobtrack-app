@@ -5,6 +5,7 @@ import AppSidebar from '../components/layout/AppSidebar';
 import AppHeader from '../components/layout/AppHeader';
 import {Toaster} from '../components/ui/toaster';
 import { FirebaseClientProvider } from '../firebase';
+import { ThemeProvider } from '../components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'JobTrack App',
@@ -27,18 +28,25 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <FirebaseClientProvider>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <AppHeader />
-              <main className="min-h-[calc(100vh-4rem)] bg-background p-4 sm:p-6 lg:p-8">
-                {children}
-              </main>
-            </SidebarInset>
-          </SidebarProvider>
-        </FirebaseClientProvider>
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <FirebaseClientProvider>
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset>
+                <AppHeader />
+                <main className="min-h-[calc(100vh-4rem)] bg-background p-4 sm:p-6 lg:p-8">
+                  {children}
+                </main>
+              </SidebarInset>
+            </SidebarProvider>
+          </FirebaseClientProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

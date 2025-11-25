@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {SidebarTrigger} from '../ui/sidebar';
+import {SidebarTrigger} from '../../components/ui/sidebar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,13 +9,30 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import {Button} from '../ui/button';
-import {Avatar, AvatarFallback, AvatarImage} from '../ui/avatar';
-import {LogOut, User, LogIn} from 'lucide-react';
+} from '../../components/ui/dropdown-menu';
+import {Button} from '../../components/ui/button';
+import {Avatar, AvatarFallback, AvatarImage} from '../../components/ui/avatar';
+import {LogOut, User, LogIn, Moon, Sun} from 'lucide-react';
 import { useFirebase } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
+
+function ThemeToggle() {
+  const { setTheme, theme } = useTheme();
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+    >
+      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span className="sr-only">Toggle theme</span>
+    </Button>
+  );
+}
 
 export default function AppHeader() {
   const { auth, user } = useFirebase();
@@ -41,6 +58,7 @@ export default function AppHeader() {
         <SidebarTrigger />
       </div>
       <div className="flex items-center gap-4">
+        <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
