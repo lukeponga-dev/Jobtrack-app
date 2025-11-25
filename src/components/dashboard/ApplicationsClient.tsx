@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {MoreHorizontal, PlusCircle, Search} from 'lucide-react';
+import {MoreHorizontal, PlusCircle, Search, Upload} from 'lucide-react';
 import {useIsMobile} from '../../hooks/use-mobile';
 import type {Application, ApplicationStatus} from '../../lib/types';
 import {Button} from '../ui/button';
@@ -19,6 +19,7 @@ import {ApplicationTable} from './ApplicationTable';
 import {ApplicationCards} from './ApplicationCards';
 import {AddApplicationDialog} from './AddApplicationDialog';
 import {DeleteApplicationDialog} from './DeleteApplicationDialog';
+import {ImportApplicationsDialog} from './ImportApplicationsDialog';
 import {useFirebase, deleteDocumentNonBlocking} from '../../firebase';
 import {doc} from 'firebase/firestore';
 import {useToast} from '../../hooks/use-toast';
@@ -42,6 +43,7 @@ export default function ApplicationsClient({
   );
   const [searchTerm, setSearchTerm] = React.useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
+  const [isImportDialogOpen, setIsImportDialogOpen] = React.useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [applicationToDelete, setApplicationToDelete] =
     React.useState<Application | null>(null);
@@ -84,6 +86,13 @@ export default function ApplicationsClient({
     setIsDeleteDialogOpen(false);
     setApplicationToDelete(null);
   };
+  
+  const handleImportComplete = () => {
+    toast({
+      title: 'Import Successful',
+      description: 'Your job applications have been imported.',
+    });
+  }
 
   return (
     <div className="space-y-4">
@@ -110,6 +119,14 @@ export default function ApplicationsClient({
               />
             </div>
             <Button
+              variant="outline"
+              className="hidden sm:inline-flex"
+              onClick={() => setIsImportDialogOpen(true)}
+            >
+              <Upload className="mr-2 h-4 w-4" />
+              Import
+            </Button>
+            <Button
               className="hidden sm:inline-flex"
               onClick={() => setIsAddDialogOpen(true)}
             >
@@ -128,6 +145,10 @@ export default function ApplicationsClient({
                 <DropdownMenuItem onClick={() => setIsAddDialogOpen(true)}>
                   <PlusCircle className="mr-2 h-4 w-4" />
                   Add Application
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setIsImportDialogOpen(true)}>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Import Data
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -152,6 +173,11 @@ export default function ApplicationsClient({
       <AddApplicationDialog
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
+      />
+       <ImportApplicationsDialog
+        open={isImportDialogOpen}
+        onOpenChange={setIsImportDialogOpen}
+        onImportComplete={handleImportComplete}
       />
       <DeleteApplicationDialog
         open={isDeleteDialogOpen}
