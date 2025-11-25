@@ -7,14 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/firebase';
 import {
-  initiateEmailSignIn,
-  initiateEmailSignUp,
-} from '@/firebase/non-blocking-login';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+  GoogleAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
 
 const GoogleIcon = () => (
   <svg role="img" viewBox="0 0 24 24" className="mr-2 h-4 w-4">
@@ -50,9 +50,9 @@ export function UserAuthForm() {
 
     try {
       if (isSigningUp) {
-        initiateEmailSignUp(auth, email, password);
+        await createUserWithEmailAndPassword(auth, email, password);
       } else {
-        initiateEmailSignIn(auth, email, password);
+        await signInWithEmailAndPassword(auth, email, password);
       }
       router.push('/');
     } catch (error: any) {
