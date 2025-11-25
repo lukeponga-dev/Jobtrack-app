@@ -1,3 +1,4 @@
+import DashboardLayout from '@/app/dashboard/layout';
 import ApplicationDetailClient from './ApplicationDetailClient';
 
 export default function ApplicationDetailPage({
@@ -5,5 +6,9 @@ export default function ApplicationDetailPage({
 }: {
   params: { id: string };
 }) {
-  return <ApplicationDetailClient applicationId={params.id} />;
+  return (
+    <DashboardLayout>
+      <ApplicationDetailClient applicationId={params.id} />
+    </DashboardLayout>
+  );
 }

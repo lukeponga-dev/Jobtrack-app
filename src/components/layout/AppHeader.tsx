@@ -17,6 +17,7 @@ import { useFirebase } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { Logo } from '../Logo';
 
 function ThemeToggle() {
   const { setTheme, theme } = useTheme();
@@ -40,7 +41,7 @@ export default function AppHeader() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push('/login');
+    router.push('/');
   };
 
   const userAvatar = user?.photoURL;
@@ -54,8 +55,9 @@ export default function AppHeader() {
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background/80 px-4 backdrop-blur-md md:justify-end md:px-6">
-      <div className="md:hidden">
+      <div className="flex items-center gap-2 md:hidden">
         <SidebarTrigger />
+        <Logo />
       </div>
       <div className="flex items-center gap-4">
         <ThemeToggle />

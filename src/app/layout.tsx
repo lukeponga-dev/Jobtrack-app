@@ -29,6 +29,8 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <meta name="theme-color" content="#0a0a0a" />
+        <link rel="icon" href="/icon.svg" sizes="any" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body className="font-body antialiased">
         <ThemeProvider
@@ -38,16 +40,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <FirebaseClientProvider>
-            <SidebarProvider>
-              <AppSidebar />
-              <SidebarInset>
-                <AppHeader />
-                <main className="min-h-[calc(100vh-4rem)] bg-background p-2 pb-20 sm:p-4 lg:p-6">
-                  {children}
-                </main>
-                <BottomNavbar />
-              </SidebarInset>
-            </SidebarProvider>
+            {children}
           </FirebaseClientProvider>
           <Toaster />
         </ThemeProvider>

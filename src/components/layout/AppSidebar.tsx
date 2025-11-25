@@ -15,7 +15,7 @@ import {
 import {Logo} from '../Logo';
 
 const menuItems = [
-  {href: '/', label: 'Dashboard', icon: LayoutGrid},
+  {href: '/dashboard', label: 'Dashboard', icon: LayoutGrid},
   {href: '/resume-feedback', label: 'Resume Feedback', icon: FileText},
   {
     href: '/cover-letter-generator',

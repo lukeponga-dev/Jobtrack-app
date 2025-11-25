@@ -77,7 +77,7 @@ export default function ApplicationDetailClient({
       <div className="text-center">
         <p className="mb-4">Application not found.</p>
         <Button asChild>
-          <Link href="/">
+          <Link href="/dashboard">
             <ArrowLeft className="mr-2" /> Back to Dashboard
           </Link>
         </Button>
@@ -90,7 +90,7 @@ export default function ApplicationDetailClient({
       <header className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           <Button asChild variant="outline" size="icon">
-            <Link href="/">
+            <Link href="/dashboard">
               <ArrowLeft />
               <span className="sr-only">Back to Dashboard</span>
             </Link>

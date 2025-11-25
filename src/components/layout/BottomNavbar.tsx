@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ClipboardPen, FileText, LayoutGrid, User } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useFirebase } from '@/firebase';
 
 const menuItems = [
-    {href: '/', label: 'Dashboard', icon: LayoutGrid},
+    {href: '/dashboard', label: 'Dashboard', icon: LayoutGrid},
     {href: '/resume-feedback', label: 'Resume', icon: FileText},
     {href: '/cover-letter-generator', label: 'Cover Letter', icon: ClipboardPen},
     {href: '/profile', label: 'Profile', icon: User},
@@ -14,6 +15,11 @@ const menuItems = [
 
 export default function BottomNavbar() {
     const pathname = usePathname();
+    const { user, isUserLoading } = useFirebase();
+
+    if (isUserLoading || !user) {
+        return null;
+    }
 
     return (
         <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-background/80 backdrop-blur-md md:hidden">

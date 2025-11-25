@@ -54,7 +54,7 @@ export function UserAuthForm() {
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
-      router.push('/');
+      router.push('/dashboard');
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -71,7 +71,7 @@ export function UserAuthForm() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      router.push('/');
+      router.push('/dashboard');
     } catch (error: any) {
       toast({
         variant: 'destructive',
