@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
-import { DashboardStats } from '@/components/dashboard/DashboardStats';
-import ApplicationsClient from '@/components/dashboard/ApplicationsClient';
-import { useCollection, useFirebase } from '@/firebase';
+import { DashboardStats } from '../components/dashboard/DashboardStats';
+import ApplicationsClient from '../components/dashboard/ApplicationsClient';
+import { useCollection, useFirebase } from '../firebase';
 import { collection } from 'firebase/firestore';
-import { Application } from '@/lib/types';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Application } from '../lib/types';
+import { Skeleton } from '../components/ui/skeleton';
 
 export default function DashboardPage() {
   const { firestore, user, isUserLoading } = useFirebase();
