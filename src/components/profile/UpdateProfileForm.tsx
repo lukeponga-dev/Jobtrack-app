@@ -8,6 +8,7 @@ import { Button } from '../ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,7 +18,7 @@ import { Input } from '../ui/input';
 import { useToast } from '../../hooks/use-toast';
 import { useFirebase } from '../../firebase';
 import { updateProfile } from 'firebase/auth';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription as CardDescriptionComponent } from '../ui/card';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
@@ -73,7 +74,7 @@ export function UpdateProfileForm() {
     <Card>
       <CardHeader>
         <CardTitle>Profile Details</CardTitle>
-        <CardDescription>View and update your personal information.</CardDescription>
+        <CardDescriptionComponent>View and update your personal information.</CardDescriptionComponent>
       </CardHeader>
       <CardContent>
         <Form {...form}>
