@@ -19,6 +19,7 @@ import { collection } from 'firebase/firestore';
 import type { ApplicationStatus } from '../../lib/types';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Info } from 'lucide-react';
+import { format, parse } from 'date-fns';
 
 type ImportApplicationsDialogProps = {
   open: boolean;
@@ -26,7 +27,17 @@ type ImportApplicationsDialogProps = {
   onImportComplete: () => void;
 };
 
-const requiredHeaders = ['companyName', 'position', 'applicationDate', 'status'];
+const requiredHeaders = ['company', 'role', 'dateApplied', 'status'];
+
+const statusMap: { [key: string]: ApplicationStatus } = {
+  'expired': 'rejected',
+  'unlikely to progress': 'rejected',
+  'not selected': 'rejected',
+  'interviewing': 'interview',
+  'applied': 'applied',
+  'viewed': 'applied',
+};
+
 
 export function ImportApplicationsDialog({ open, onOpenChange, onImportComplete }: ImportApplicationsDialogProps) {
   const { toast } = useToast();
@@ -88,11 +99,24 @@ export function ImportApplicationsDialog({ open, onOpenChange, onImportComplete 
         const importPromises: Promise<any>[] = [];
 
         results.data.forEach((row: any) => {
+          const rawStatus = (row.status || 'applied').toLowerCase();
+          const status = statusMap[rawStatus] || 'applied';
+
+          let applicationDate;
+          try {
+            // Try parsing M/d/yyyy first
+            const parsedDate = parse(row.dateApplied, 'M/d/yyyy', new Date());
+            applicationDate = parsedDate.toISOString();
+          } catch(e) {
+            applicationDate = new Date().toISOString();
+          }
+
+
           const applicationData = {
-            companyName: row.companyName || '',
-            position: row.position || '',
-            applicationDate: new Date(row.applicationDate).toISOString() || new Date().toISOString(),
-            status: (row.status || 'applied') as ApplicationStatus,
+            companyName: row.company || '',
+            position: row.role || '',
+            applicationDate: applicationDate,
+            status: status,
             notes: row.notes || '',
             userId: user.uid,
           };
@@ -147,10 +171,10 @@ export function ImportApplicationsDialog({ open, onOpenChange, onImportComplete 
                 <AlertDescription>
                     <p className="mb-2">Your CSV file must include the following headers:</p>
                     <ul className="list-disc list-inside text-xs space-y-1">
-                        <li><code className="font-mono bg-muted px-1 py-0.5 rounded">companyName</code></li>
-                        <li><code className="font-mono bg-muted px-1 py-0.5 rounded">position</code></li>
-                        <li><code className="font-mono bg-muted px-1 py-0.5 rounded">applicationDate</code> (YYYY-MM-DD)</li>
-                        <li><code className="font-mono bg-muted px-1 py-0.5 rounded">status</code> (applied, interview, offer, or rejected)</li>
+                        <li><code className="font-mono bg-muted px-1 py-0.5 rounded">company</code></li>
+                        <li><code className="font-mono bg-muted px-1 py-0.5 rounded">role</code></li>
+                        <li><code className="font-mono bg-muted px-1 py-0.5 rounded">dateApplied</code> (M/d/yyyy)</li>
+                        <li><code className="font-mono bg-muted px-1 py-0.5 rounded">status</code></li>
                     </ul>
                      <p className="mt-2 text-xs">Optional headers: <code className="font-mono bg-muted px-1 py-0.5 rounded">notes</code></p>
                 </AlertDescription>
