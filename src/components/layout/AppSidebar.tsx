@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import {ClipboardPen, FileText, LayoutGrid} from 'lucide-react';
+import {ClipboardPen, FileText, LayoutGrid, User} from 'lucide-react';
 
 import {
   Sidebar,
@@ -21,6 +21,11 @@ const menuItems = [
     href: '/cover-letter-generator',
     label: 'Cover Letter AI',
     icon: ClipboardPen,
+  },
+  {
+    href: '/profile',
+    label: 'Profile',
+    icon: User,
   },
 ];
 
