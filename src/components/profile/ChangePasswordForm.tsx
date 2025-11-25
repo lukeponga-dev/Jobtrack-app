@@ -78,7 +78,7 @@ export function ChangePasswordForm() {
     <Card>
       <CardHeader>
         <CardTitle>Change Password</CardTitle>
-        <CardDescription>Update your password here. After saving, you will be logged out.</CardDescription>
+        <CardDescription>Update your password here. After saving, you may be required to log in again.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
