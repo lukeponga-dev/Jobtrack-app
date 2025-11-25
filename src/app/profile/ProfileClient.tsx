@@ -5,9 +5,14 @@ import { useFirebase } from '../../firebase';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Skeleton } from '../../components/ui/skeleton';
 import { UpdateProfileForm } from '../../components/profile/UpdateProfileForm';
+import { ChangePasswordForm } from '@/components/profile/ChangePasswordForm';
 
 export default function ProfileClient() {
   const { user, isUserLoading } = useFirebase();
+
+  const isPasswordProvider = user?.providerData.some(
+    (provider) => provider.providerId === 'password'
+  );
 
   if (isUserLoading) {
     return (
@@ -47,8 +52,9 @@ export default function ProfileClient() {
   }
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-2xl space-y-6">
       <UpdateProfileForm />
+      {isPasswordProvider && <ChangePasswordForm />}
     </div>
   );
 }
