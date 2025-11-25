@@ -87,7 +87,7 @@ export default function ApplicationDetailClient({
 
   return (
     <div className="container mx-auto max-w-5xl space-y-6 px-4 py-6">
-      <header className="flex items-center justify-between">
+      <header className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           <Button asChild variant="outline" size="icon">
             <Link href="/">
@@ -179,9 +179,9 @@ export default function ApplicationDetailClient({
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-3">
-                {application.companyLogo ? (
+                {application.companyLogoUrl ? (
                    <Image
-                      src={application.companyLogo}
+                      src={application.companyLogoUrl}
                       alt={`${application.companyName} logo`}
                       width={48}
                       height={48}

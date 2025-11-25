@@ -6,7 +6,7 @@ import {useIsMobile} from '../../hooks/use-mobile';
 import type {Application, ApplicationStatus} from '../../lib/types';
 import {Button} from '../ui/button';
 import {Input} from '../ui/input';
-import {Tabs, TabsContent, TabsList, TabsTrigger} from '../ui/tabs';
+import {Tabs, TabsList, TabsTrigger} from '../ui/tabs';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +24,7 @@ import {useFirebase, deleteDocumentNonBlocking} from '../../firebase';
 import {doc} from 'firebase/firestore';
 import {useToast} from '../../hooks/use-toast';
 import { EditApplicationDialog } from './EditApplicationDialog';
+import { ScrollArea } from '../ui/scroll-area';
 
 const statusTabs: {value: ApplicationStatus | 'all'; label: string}[] = [
   {value: 'all', label: 'All'},
@@ -128,21 +129,16 @@ export default function ApplicationsClient({
         onValueChange={value => setActiveTab(value as any)}
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-flex">
-            {statusTabs.slice(0, 3).map(tab => (
-              <TabsTrigger key={tab.value} value={tab.value}>
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <TabsList className="grid w-full grid-cols-2 sm:w-auto sm:inline-flex">
-            {statusTabs.slice(3).map(tab => (
-              <TabsTrigger key={tab.value} value={tab.value}>
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
+          <ScrollArea className="w-full sm:w-auto">
+            <TabsList className="w-max">
+              {statusTabs.map(tab => (
+                <TabsTrigger key={tab.value} value={tab.value}>
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </ScrollArea>
+          
           <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
             <div className="relative flex-1 sm:flex-initial">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -154,7 +150,7 @@ export default function ApplicationsClient({
               />
             </div>
             <Button
-              className="sm:inline-flex"
+              className="hidden sm:inline-flex"
               onClick={() => setIsAddDialogOpen(true)}
             >
               <PlusCircle className="mr-2 h-4 w-4" />

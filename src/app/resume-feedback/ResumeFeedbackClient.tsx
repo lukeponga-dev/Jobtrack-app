@@ -125,6 +125,15 @@ export default function ResumeFeedbackClient() {
             </div>
           </div>
         )}
+        {!isLoading && !feedback && (
+          <div className="flex h-full min-h-96 flex-col items-center justify-center rounded-lg border-2 border-dashed bg-card text-center">
+            <Lightbulb className="h-12 w-12 text-muted-foreground" />
+            <h3 className="mt-4 text-lg font-semibold">Get Instant Feedback</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Upload your resume and click &quot;Analyze&quot; to see your results.
+            </p>
+          </div>
+        )}
         {feedback && (
           <div className="space-y-6">
             <Card>

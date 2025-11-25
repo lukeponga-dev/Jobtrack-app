@@ -161,33 +161,35 @@ export default function CoverLetterClient() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Generated Cover Letter</CardTitle>
-          {generatedLetter && (
-            <Button variant="ghost" size="icon" onClick={handleCopy}>
-              <Clipboard className="h-4 w-4" />
-            </Button>
-          )}
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-             <div className="flex h-full min-h-96 items-center justify-center">
-             <div className="flex flex-col items-center gap-4">
-               <Loader2 className="h-12 w-12 animate-spin text-primary" />
-               <p className="text-lg font-semibold">Generating...</p>
-               <p className="text-sm text-muted-foreground">Crafting your cover letter.</p>
-             </div>
-           </div>
-          ) : (
-            <Textarea
-              readOnly
-              value={generatedLetter || 'Your generated cover letter will appear here...'}
-              className="h-96 min-h-[500px] bg-muted/50 font-mono text-sm"
-            />
-          )}
-        </CardContent>
-      </Card>
+      <div className="space-y-8">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Generated Cover Letter</CardTitle>
+            {generatedLetter && (
+              <Button variant="ghost" size="icon" onClick={handleCopy}>
+                <Clipboard className="h-4 w-4" />
+              </Button>
+            )}
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="flex h-full min-h-96 items-center justify-center">
+              <div className="flex flex-col items-center gap-4">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                <p className="text-lg font-semibold">Generating...</p>
+                <p className="text-sm text-muted-foreground">Crafting your cover letter.</p>
+              </div>
+            </div>
+            ) : (
+              <Textarea
+                readOnly
+                value={generatedLetter || 'Your generated cover letter will appear here...'}
+                className="h-96 min-h-[500px] bg-muted/50 font-mono text-sm"
+              />
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
