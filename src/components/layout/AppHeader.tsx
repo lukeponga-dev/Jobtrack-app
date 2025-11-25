@@ -12,12 +12,15 @@ import {
 } from '../../components/ui/dropdown-menu';
 import {Button} from '../../components/ui/button';
 import {Avatar, AvatarFallback, AvatarImage} from '../../components/ui/avatar';
-import {LogOut, User, LogIn, Moon, Sun} from 'lucide-react';
+import {LogOut, User, LogIn, Moon, Sun, Download} from 'lucide-react';
 import { useFirebase } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Logo } from '../Logo';
+import { useInstallPrompt } from '@/hooks/use-install-prompt';
+import { InstallPwaDialog } from '../pwa/InstallPwaDialog';
+import React from 'react';
 
 function ThemeToggle() {
   const { setTheme, theme } = useTheme();
@@ -38,6 +41,8 @@ function ThemeToggle() {
 export default function AppHeader() {
   const { auth, user } = useFirebase();
   const router = useRouter();
+  const { canInstall, showInstallPrompt } = useInstallPrompt();
+  const [isInstallDialogOpen, setIsInstallDialogOpen] = React.useState(false);
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -60,6 +65,19 @@ export default function AppHeader() {
         <Logo />
       </div>
       <div className="flex items-center gap-4">
+        {canInstall && (
+          <>
+            <Button variant="outline" size="sm" onClick={() => setIsInstallDialogOpen(true)}>
+              <Download className="mr-2 h-4 w-4" />
+              Install App
+            </Button>
+            <InstallPwaDialog
+              isOpen={isInstallDialogOpen}
+              onClose={() => setIsInstallDialogOpen(false)}
+              onInstall={showInstallPrompt}
+            />
+          </>
+        )}
         <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
