@@ -4,9 +4,11 @@ import type {Application} from '@/lib/types';
 export function ApplicationCards({
   applications,
   onDelete,
+  onEdit,
 }: {
   applications: Application[];
   onDelete: (application: Application) => void;
+  onEdit: (application: Application) => void;
 }) {
   if (applications.length === 0) {
     return (
@@ -25,6 +27,7 @@ export function ApplicationCards({
           key={app.id}
           application={app}
           onDelete={onDelete}
+          onEdit={onEdit}
         />
       ))}
     </div>

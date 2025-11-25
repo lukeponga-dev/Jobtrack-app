@@ -23,6 +23,7 @@ import {ImportApplicationsDialog} from './ImportApplicationsDialog';
 import {useFirebase, deleteDocumentNonBlocking} from '../../firebase';
 import {doc} from 'firebase/firestore';
 import {useToast} from '../../hooks/use-toast';
+import { EditApplicationDialog } from './EditApplicationDialog';
 
 const statusTabs: {value: ApplicationStatus | 'all'; label: string}[] = [
   {value: 'all', label: 'All'},
@@ -45,6 +46,8 @@ export default function ApplicationsClient({
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = React.useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
+  const [applicationToEdit, setApplicationToEdit] = React.useState<Application | null>(null);
   const [applicationToDelete, setApplicationToDelete] =
     React.useState<Application | null>(null);
 
@@ -64,6 +67,11 @@ export default function ApplicationsClient({
   const handleDeleteClick = (application: Application) => {
     setApplicationToDelete(application);
     setIsDeleteDialogOpen(true);
+  };
+  
+  const handleEditClick = (application: Application) => {
+    setApplicationToEdit(application);
+    setIsEditDialogOpen(true);
   };
 
   const handleDeleteConfirm = () => {
@@ -160,11 +168,13 @@ export default function ApplicationsClient({
               <ApplicationCards
                 applications={filteredApps}
                 onDelete={handleDeleteClick}
+                onEdit={handleEditClick}
               />
             ) : (
               <ApplicationTable
                 applications={filteredApps}
                 onDelete={handleDeleteClick}
+                onEdit={handleEditClick}
               />
             )}
           </TabsContent>
@@ -183,6 +193,11 @@ export default function ApplicationsClient({
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         onConfirm={handleDeleteConfirm}
+      />
+      <EditApplicationDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        application={applicationToEdit}
       />
     </div>
   );

@@ -34,9 +34,11 @@ const statusVariantMap: Record<
 export function ApplicationCard({
   application,
   onDelete,
+  onEdit,
 }: {
   application: Application;
   onDelete: (application: Application) => void;
+  onEdit: (application: Application) => void;
 }) {
   return (
     <Card>
@@ -73,7 +75,7 @@ export function ApplicationCard({
             <DropdownMenuItem asChild>
               <Link href={`/application/${application.id}`}>View Details</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEdit(application)}>Edit</DropdownMenuItem>
             <DropdownMenuItem
               className="text-destructive"
               onClick={() => onDelete(application)}

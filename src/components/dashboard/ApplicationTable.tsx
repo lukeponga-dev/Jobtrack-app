@@ -37,9 +37,11 @@ const statusVariantMap: Record<
 export function ApplicationTable({
   applications,
   onDelete,
+  onEdit,
 }: {
   applications: Application[];
   onDelete: (application: Application) => void;
+  onEdit: (application: Application) => void;
 }) {
   return (
     <Table>
@@ -103,7 +105,7 @@ export function ApplicationTable({
                   <DropdownMenuItem asChild>
                     <Link href={`/application/${app.id}`}>View Details</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onEdit(app)}>Edit</DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-destructive"
                     onClick={() => onDelete(app)}
