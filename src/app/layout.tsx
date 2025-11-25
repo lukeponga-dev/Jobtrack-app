@@ -40,7 +40,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <FirebaseClientProvider>
-            {children}
+             <main>{children}</main>
           </FirebaseClientProvider>
           <Toaster />
         </ThemeProvider>

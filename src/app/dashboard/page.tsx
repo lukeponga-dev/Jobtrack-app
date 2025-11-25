@@ -11,7 +11,6 @@ import { Loader2 } from 'lucide-react';
 
 export default function DashboardPage() {
   const { firestore, user, isUserLoading } = useFirebase();
-  const router = useRouter();
 
   const applicationsCollectionRef = React.useMemo(() => {
     if (!firestore || !user) return null;
@@ -19,12 +18,6 @@ export default function DashboardPage() {
   }, [firestore, user]);
 
   const { data: applications, isLoading: areApplicationsLoading } = useCollection<Application>(applicationsCollectionRef as any);
-
-  React.useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.replace('/login');
-    }
-  }, [user, isUserLoading, router]);
 
   const isLoading = isUserLoading || areApplicationsLoading;
   
