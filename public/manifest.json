@@ -1,0 +1,17 @@
+{
+  "name": "JobTrack: Your AI-Powered Job Application Hub",
+  "short_name": "JobTrack",
+  "description": "Track your job applications with ease.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
