@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Papa from 'papaparse';
-import { Button } from '../ui/button';
+import { Button } from '../../components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -10,14 +10,14 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
-} from '../ui/dialog';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+} from '../../components/ui/dialog';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
 import { useToast } from '../../hooks/use-toast';
 import { useFirebase, addDocumentNonBlocking } from '../../firebase';
 import { collection } from 'firebase/firestore';
 import type { ApplicationStatus } from '../../lib/types';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '../../components/ui/alert';
 import { Info } from 'lucide-react';
 import { format, parse, isValid } from 'date-fns';
 
