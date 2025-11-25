@@ -102,6 +102,25 @@ export default function ApplicationsClient({
     });
   }
 
+  const renderContent = () => {
+    if (isMobile) {
+      return (
+        <ApplicationCards
+          applications={filteredApps}
+          onDelete={handleDeleteClick}
+          onEdit={handleEditClick}
+        />
+      );
+    }
+    return (
+      <ApplicationTable
+        applications={filteredApps}
+        onDelete={handleDeleteClick}
+        onEdit={handleEditClick}
+      />
+    );
+  };
+
   return (
     <div className="space-y-4">
       <Tabs
@@ -109,13 +128,21 @@ export default function ApplicationsClient({
         onValueChange={value => setActiveTab(value as any)}
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <TabsList>
-            {statusTabs.map(tab => (
+          <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-flex">
+            {statusTabs.slice(0, 3).map(tab => (
               <TabsTrigger key={tab.value} value={tab.value}>
                 {tab.label}
               </TabsTrigger>
             ))}
           </TabsList>
+          <TabsList className="grid w-full grid-cols-2 sm:w-auto sm:inline-flex">
+            {statusTabs.slice(3).map(tab => (
+              <TabsTrigger key={tab.value} value={tab.value}>
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
           <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
             <div className="relative flex-1 sm:flex-initial">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -127,23 +154,15 @@ export default function ApplicationsClient({
               />
             </div>
             <Button
-              variant="outline"
-              className="hidden sm:inline-flex"
-              onClick={() => setIsImportDialogOpen(true)}
-            >
-              <Upload className="mr-2 h-4 w-4" />
-              Import
-            </Button>
-            <Button
-              className="hidden sm:inline-flex"
+              className="sm:inline-flex"
               onClick={() => setIsAddDialogOpen(true)}
             >
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Application
+              <span className="hidden sm:inline">Add</span>
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="sm:hidden">
+                <Button variant="outline" size="icon">
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -162,23 +181,9 @@ export default function ApplicationsClient({
             </DropdownMenu>
           </div>
         </div>
-        {statusTabs.map(tab => (
-          <TabsContent key={tab.value} value={tab.value} className="mt-4">
-            {isMobile ? (
-              <ApplicationCards
-                applications={filteredApps}
-                onDelete={handleDeleteClick}
-                onEdit={handleEditClick}
-              />
-            ) : (
-              <ApplicationTable
-                applications={filteredApps}
-                onDelete={handleDeleteClick}
-                onEdit={handleEditClick}
-              />
-            )}
-          </TabsContent>
-        ))}
+        <div className="mt-4">
+          {renderContent()}
+        </div>
       </Tabs>
       <AddApplicationDialog
         open={isAddDialogOpen}

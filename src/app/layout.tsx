@@ -39,7 +39,7 @@ export default function RootLayout({
               <AppSidebar />
               <SidebarInset>
                 <AppHeader />
-                <main className="min-h-[calc(100vh-4rem)] bg-background p-4 sm:p-6 lg:p-8">
+                <main className="min-h-[calc(100vh-4rem)] bg-background p-2 sm:p-4 lg:p-6">
                   {children}
                 </main>
               </SidebarInset>
