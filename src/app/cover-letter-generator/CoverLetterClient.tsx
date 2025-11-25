@@ -4,7 +4,7 @@ import * as React from 'react';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import {Button} from '@/components/ui/button';
+import {Button} from '../../components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,10 +13,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import {Textarea} from '@/components/ui/textarea';
-import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+} from '../../components/ui/form';
+import {Textarea} from '../../components/ui/textarea';
+import {RadioGroup, RadioGroupItem} from '../../components/ui/radio-group';
+import {Card, CardContent, CardHeader, CardTitle} from '../../components/ui/card';
 import {Clipboard, Loader2, Wand2} from 'lucide-react';
 import {useToast} from '@/hooks/use-toast';
 import {generateCoverLetter} from '@/ai/flows/cover-letter-generation';
