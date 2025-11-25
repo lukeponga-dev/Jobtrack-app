@@ -6,6 +6,7 @@ import AppHeader from '../components/layout/AppHeader';
 import {Toaster} from '../components/ui/toaster';
 import { FirebaseClientProvider } from '../firebase';
 import { ThemeProvider } from '../components/ThemeProvider';
+import BottomNavbar from '../components/layout/BottomNavbar';
 
 export const metadata: Metadata = {
   title: 'JobTrack App',
@@ -39,9 +40,10 @@ export default function RootLayout({
               <AppSidebar />
               <SidebarInset>
                 <AppHeader />
-                <main className="min-h-[calc(100vh-4rem)] bg-background p-2 sm:p-4 lg:p-6">
+                <main className="min-h-[calc(100vh-4rem)] bg-background p-2 pb-20 sm:p-4 lg:p-6">
                   {children}
                 </main>
+                <BottomNavbar />
               </SidebarInset>
             </SidebarProvider>
           </FirebaseClientProvider>

@@ -33,7 +33,7 @@ export default function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar>
+    <Sidebar className="hidden md:flex">
       <SidebarHeader>
         <Logo />
       </SidebarHeader>
