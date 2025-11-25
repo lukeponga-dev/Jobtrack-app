@@ -60,11 +60,11 @@ export default function AppHeader() {
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background/80 px-4 backdrop-blur-md md:justify-end md:px-6">
-      <div className="flex items-center gap-2 md:hidden">
+      <div className="flex items-center gap-4 md:hidden">
         <SidebarTrigger />
-        <Logo />
+        <span className="font-semibold">JobTrack</span>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
         {canInstall && (
           <>
             <Button variant="outline" size="sm" onClick={() => setIsInstallDialogOpen(true)}>

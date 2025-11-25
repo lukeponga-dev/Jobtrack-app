@@ -22,18 +22,13 @@ const menuItems = [
     label: 'Cover Letter AI',
     icon: ClipboardPen,
   },
-  {
-    href: '/profile',
-    label: 'Profile',
-    icon: User,
-  },
 ];
 
 export default function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="hidden md:flex">
+    <Sidebar>
       <SidebarHeader>
         <Logo />
       </SidebarHeader>
@@ -43,7 +38,7 @@ export default function AppSidebar() {
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === item.href}
+                isActive={pathname.startsWith(item.href)}
                 tooltip={item.label}
               >
                 <Link href={item.href}>

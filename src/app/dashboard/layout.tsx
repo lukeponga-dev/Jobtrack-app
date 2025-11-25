@@ -10,14 +10,16 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <AppHeader />
-        <main className="min-h-[calc(100vh-4rem)] bg-background p-2 pb-20 sm:p-4 lg:p-6">
-          {children}
-        </main>
+      <div className="relative flex min-h-screen flex-col">
+        <AppSidebar />
+        <SidebarInset>
+            <AppHeader />
+            <main className="flex-1 bg-background p-4 pb-20 sm:p-6 lg:p-8">
+              {children}
+            </main>
+        </SidebarInset>
         <BottomNavbar />
-      </SidebarInset>
+      </div>
     </SidebarProvider>
   );
 }
