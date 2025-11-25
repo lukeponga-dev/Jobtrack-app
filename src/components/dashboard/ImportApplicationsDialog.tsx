@@ -83,6 +83,7 @@ export function ImportApplicationsDialog({ open, onOpenChange, onImportComplete 
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
+      transformHeader: header => header.trim(),
       complete: (results) => {
         const headers = results.meta.fields;
         if (!headers || !requiredHeaders.every(h => headers.includes(h))) {
@@ -99,27 +100,35 @@ export function ImportApplicationsDialog({ open, onOpenChange, onImportComplete 
         const importPromises: Promise<any>[] = [];
 
         results.data.forEach((row: any) => {
-          const rawStatus = (row.status || 'applied').toLowerCase();
-          const status = statusMap[rawStatus] || 'applied';
+          const rawStatus = (row.status || 'applied').toLowerCase().trim();
+          const status: ApplicationStatus = statusMap[rawStatus] || 'applied';
 
           let applicationDate;
           const dateString = row.dateApplied;
-          const dateFormats = ['M/d/yyyy', 'MM/dd/yyyy', 'yyyy-MM-dd', 'd/M/yyyy'];
+          // More robust date parsing
+          const dateFormats = ['M/d/yyyy', 'MM/dd/yyyy', 'yyyy-MM-dd', 'd/M/yyyy', "MM/dd/yy", "M/d/yy"];
           let parsedDate: Date | null = null;
-
-          for (const format of dateFormats) {
-            const date = parse(dateString, format, new Date());
-            if (isValid(date)) {
-              parsedDate = date;
-              break;
+          
+          if(dateString){
+            for (const formatStr of dateFormats) {
+                const date = parse(dateString, formatStr, new Date());
+                if (isValid(date)) {
+                  // Check if the year is in the future, if so, adjust it to the current year or a past year.
+                  // This handles cases like 10/2/2025 from the provided data.
+                  // For this example, we'll just use the parsed date as is, but you could add logic here.
+                  parsedDate = date;
+                  break;
+                }
             }
           }
 
           if (parsedDate) {
             applicationDate = parsedDate.toISOString();
           } else {
+            // Fallback to today's date if parsing fails
             applicationDate = new Date().toISOString();
           }
+
 
           const applicationData = {
             companyName: row.company || '',
