@@ -1,3 +1,4 @@
+
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -21,7 +22,7 @@ export default function PrivacyPolicyPage() {
         </div>
       </header>
 
-      <main className="flex-1 py-12 md:py-16">
+      <main className="flex-1 py-16 md:py-24">
         <div className="container mx-auto max-w-3xl px-4">
           <div className="prose prose-lg dark:prose-invert mx-auto">
             <h1>Privacy Policy</h1>
@@ -131,6 +132,13 @@ export default function PrivacyPolicyPage() {
           </div>
         </div>
       </main>
+
+      <footer className="border-t bg-muted">
+        <div className="container mx-auto flex h-16 flex-col items-center justify-between gap-4 px-4 py-4 text-sm text-muted-foreground sm:flex-row sm:py-0">
+            <Logo />
+            <p>&copy; {new Date().getFullYear()} JobTrack. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }
