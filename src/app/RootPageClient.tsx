@@ -100,9 +100,12 @@ function LandingPage() {
       </main>
 
       <footer className="border-t bg-muted">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 text-sm text-muted-foreground">
+        <div className="container mx-auto flex h-16 flex-col items-center justify-between gap-4 px-4 py-4 text-sm text-muted-foreground sm:flex-row sm:py-0">
             <Logo />
             <p>&copy; {new Date().getFullYear()} JobTrack. All rights reserved.</p>
+            <div className='flex gap-4'>
+              <Link href="/privacy" className="hover:text-foreground">Privacy Policy</Link>
+            </div>
         </div>
       </footer>
     </div>
