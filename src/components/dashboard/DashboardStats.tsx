@@ -30,7 +30,7 @@ export function DashboardStats({applications}: {applications: Application[]}) {
       title: 'Interview',
       value: getCount('interview'),
       icon: FileCheck,
-      color: 'text-secondary',
+      color: 'text-blue-500',
     },
     {
       title: 'Offer',
