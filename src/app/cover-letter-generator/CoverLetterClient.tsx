@@ -18,8 +18,8 @@ import {Textarea} from '../../components/ui/textarea';
 import {RadioGroup, RadioGroupItem} from '../../components/ui/radio-group';
 import {Card, CardContent, CardHeader, CardTitle} from '../../components/ui/card';
 import {Clipboard, Loader2, Wand2} from 'lucide-react';
-import {useToast} from '@/hooks/use-toast';
-import {generateCoverLetter} from '@/ai/flows/cover-letter-generation';
+import {useToast} from '../../hooks/use-toast';
+import {generateCoverLetter} from '../../ai/flows/cover-letter-generation';
 
 const formSchema = z.object({
   resumeText: z.string().min(100, {
