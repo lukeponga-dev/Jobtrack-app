@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFirebase } from '../firebase';
 import { Loader2 } from 'lucide-react';
 import { Logo } from '../components/Logo';
@@ -112,8 +112,13 @@ function LandingPage() {
 
 export default function RootPageClient() {
   const { user, isUserLoading } = useFirebase();
+  const [isClient, setIsClient] = useState(false);
 
-  if (isUserLoading) {
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (isUserLoading || !isClient) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
