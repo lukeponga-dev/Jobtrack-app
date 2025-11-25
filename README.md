@@ -1,13 +1,15 @@
 # JobTrack: Your AI-Powered Job Application Hub
 
-JobTrack is a modern, full-stack web application designed to streamline and supercharge your job search. Built with Next.js, Firebase, and cutting-edge GenAI, it provides a comprehensive suite of tools to manage applications, get AI-driven feedback, and craft the perfect cover letter.
+JobTrack is a modern, full-stack web application designed to streamline and supercharge your job search. Built with Next.js, Firebase, and cutting-edge GenAI, it provides a comprehensive suite of tools to manage applications, get AI-driven feedback, and craft the perfect cover letter. It features a sleek, mobile-first design and can be installed on any device for a native-app experience.
 
 ## ✨ Features
 
+*   **🏠 Landing Page:** A beautiful, welcoming page for new and returning users.
 *   **📄 Application Dashboard:** A central hub to track all your job applications. View, add, edit, delete, and filter your applications by status (Applied, Interview, Offer, Rejected).
 *   **⬆️ CSV Import:** Easily import your existing job application data from a CSV file to get started quickly.
 *   **🤖 AI Resume Feedback:** Upload your resume (PDF or DOCX) and receive instant, AI-powered analysis. Get an overall score, actionable suggestions for improvement, and relevant keyword optimizations to beat the Applicant Tracking Systems (ATS).
 *   **✍️ AI Cover Letter Generator:** Paste your resume and a job description to instantly generate a tailored cover letter. You can even choose the tone that best fits the company culture.
+*   **📱 Responsive & Installable:** A fully responsive, mobile-first UI with a bottom navigation bar for easy access. Install the app to your device home screen for a native experience.
 *   **👤 User Authentication & Profile:** Securely sign in with Google or email/password. Manage your profile details on a dedicated settings page.
 *   **☀️ Dark & Light Mode:** A sleek, modern interface with a theme toggle to switch between light and dark modes.
 
