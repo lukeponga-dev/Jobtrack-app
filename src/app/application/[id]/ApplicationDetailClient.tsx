@@ -114,7 +114,7 @@ export default function ApplicationDetailClient({
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <main className="col-span-1 space-y-6 md:col-span-2">
-          {application.notes && application.notes.length > 0 && (
+          {application.notes && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -123,14 +123,18 @@ export default function ApplicationDetailClient({
               </CardHeader>
               <CardContent>
                 <div className="prose prose-sm dark:prose-invert max-w-none">
-                  {application.notes.map(note => (
-                    <div key={note.id} className="mb-4 rounded-md border p-3">
-                      <p className="text-sm">{note.text}</p>
-                      <p className="mt-2 text-xs text-muted-foreground">
-                        {format(new Date(note.createdAt), 'PPP p')}
-                      </p>
-                    </div>
-                  ))}
+                  {Array.isArray(application.notes) ? (
+                    application.notes.map(note => (
+                      <div key={note.id} className="mb-4 rounded-md border p-3">
+                        <p className="text-sm">{note.text}</p>
+                        <p className="mt-2 text-xs text-muted-foreground">
+                          {format(new Date(note.createdAt), 'PPP p')}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>{application.notes}</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
