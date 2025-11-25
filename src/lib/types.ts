@@ -19,9 +19,9 @@ export type Application = {
   position: string;
   status: ApplicationStatus;
   applicationDate: string;
-  companyLogo?: string;
+  companyLogoUrl?: string;
   jobUrl?: string;
-  notes?: Note[];
+  notes?: string;
   attachments?: Attachment[];
   userId: string;
 };

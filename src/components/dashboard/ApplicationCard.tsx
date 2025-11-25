@@ -60,7 +60,7 @@ export function ApplicationCard({
           )}
           <div className="grid gap-1">
             <CardTitle className="truncate text-lg">
-              {application.companyName}
+              <Link href={`/application/${application.id}`} className="hover:underline">{application.companyName}</Link>
             </CardTitle>
             <CardDescription className="truncate">
               {application.position}
@@ -81,7 +81,7 @@ export function ApplicationCard({
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onEdit(application)}>Edit</DropdownMenuItem>
             <DropdownMenuItem
-              className="text-destructive"
+              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
               onClick={() => onDelete(application)}
             >
               Delete

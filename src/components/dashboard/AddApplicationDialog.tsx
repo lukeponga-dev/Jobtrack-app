@@ -204,7 +204,11 @@ export function AddApplicationDialog({ open, onOpenChange }: AddApplicationDialo
                 <FormItem>
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Add any notes here..." {...field} />
+                    <Textarea
+                      placeholder="Add any notes here..."
+                      className="resize-y"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

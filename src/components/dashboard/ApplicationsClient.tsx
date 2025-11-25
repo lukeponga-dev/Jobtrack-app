@@ -22,7 +22,7 @@ import {useFirebase, deleteDocumentNonBlocking} from '../../firebase';
 import {doc} from 'firebase/firestore';
 import {useToast} from '../../hooks/use-toast';
 import { EditApplicationDialog } from './EditApplicationDialog';
-import { ScrollArea } from '../ui/scroll-area';
+import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 
 const statusTabs: {value: ApplicationStatus | 'all'; label: string}[] = [
   {value: 'all', label: 'All'},
@@ -113,63 +113,65 @@ export default function ApplicationsClient({
 
   return (
     <div className="space-y-4">
-      <Tabs
-        value={activeTab}
-        onValueChange={value => setActiveTab(value as any)}
-      >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+        <Tabs
+          value={activeTab}
+          onValueChange={value => setActiveTab(value as any)}
+          className="w-full sm:w-auto"
+        >
           <ScrollArea className="w-full sm:w-auto">
-            <TabsList className="w-max">
+            <TabsList>
               {statusTabs.map(tab => (
                 <TabsTrigger key={tab.value} value={tab.value}>
                   {tab.label}
                 </TabsTrigger>
               ))}
             </TabsList>
+            <ScrollBar orientation="horizontal" />
           </ScrollArea>
-          
-          <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
-            <div className="relative flex-1 sm:flex-initial">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search..."
-                className="pl-8"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <Button
-              className="hidden sm:inline-flex"
-              onClick={() => setIsAddDialogOpen(true)}
-            >
-              <PlusCircle className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Add</span>
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setIsAddDialogOpen(true)}>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Add Application
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setIsImportDialogOpen(true)}>
-                  <Upload className="mr-2 h-4 w-4" />
-                  Import Data
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+        </Tabs>
+        
+        <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
+          <div className="relative flex-1 sm:flex-initial">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search..."
+              className="pl-8"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+            />
           </div>
+          <Button
+            className="hidden sm:inline-flex"
+            onClick={() => setIsAddDialogOpen(true)}
+          >
+            <PlusCircle className="mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Add</span>
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setIsAddDialogOpen(true)}>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Application
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsImportDialogOpen(true)}>
+                <Upload className="mr-2 h-4 w-4" />
+                Import Data
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        <div className="mt-4">
-          {renderContent()}
-        </div>
-      </Tabs>
+      </div>
+      <div className="mt-4">
+        {renderContent()}
+      </div>
       <AddApplicationDialog
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
@@ -184,11 +186,13 @@ export default function ApplicationsClient({
         onOpenChange={setIsDeleteDialogOpen}
         onConfirm={handleDeleteConfirm}
       />
-      <EditApplicationDialog
-        open={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-        application={applicationToEdit}
-      />
+      {applicationToEdit && (
+        <EditApplicationDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          application={applicationToEdit}
+        />
+      )}
     </div>
   );
 }

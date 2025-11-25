@@ -11,13 +11,11 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '../../../components/ui/card';
 import { Badge } from '../../../components/ui/badge';
 import {
   Calendar,
   Building,
-  Briefcase,
   Link as LinkIcon,
   FileText,
   Paperclip,
@@ -122,19 +120,8 @@ export default function ApplicationDetailClient({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  {Array.isArray(application.notes) ? (
-                    application.notes.map(note => (
-                      <div key={note.id} className="mb-4 rounded-md border p-3">
-                        <p className="text-sm">{note.text}</p>
-                        <p className="mt-2 text-xs text-muted-foreground">
-                          {format(new Date(note.createdAt), 'PPP p')}
-                        </p>
-                      </div>
-                    ))
-                  ) : (
-                    <p>{application.notes}</p>
-                  )}
+                <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
+                  {application.notes}
                 </div>
               </CardContent>
             </Card>
@@ -149,7 +136,7 @@ export default function ApplicationDetailClient({
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {application.attachments.map(att => (
+                  {application.attachments.map((att: any) => (
                     <li
                       key={att.id}
                       className="flex items-center justify-between rounded-md border p-2"

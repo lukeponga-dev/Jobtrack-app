@@ -70,7 +70,7 @@ export function EditApplicationDialog({ open, onOpenChange, application }: EditA
         position: application.position,
         applicationDate: new Date(application.applicationDate),
         status: application.status,
-        notes: Array.isArray(application.notes) ? application.notes.map(n => n.text).join('\n\n') : (application.notes || ''),
+        notes: application.notes || '',
       });
     }
   }, [application, form]);
@@ -196,7 +196,7 @@ export function EditApplicationDialog({ open, onOpenChange, application }: EditA
                   <FormLabel>Status</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -221,7 +221,11 @@ export function EditApplicationDialog({ open, onOpenChange, application }: EditA
                 <FormItem>
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Add any notes here..." {...field} />
+                    <Textarea
+                      placeholder="Add any notes here..."
+                      className="resize-y"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
