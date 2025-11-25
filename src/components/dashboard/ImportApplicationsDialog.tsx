@@ -19,7 +19,7 @@ import { collection } from 'firebase/firestore';
 import type { ApplicationStatus } from '../../lib/types';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Info } from 'lucide-react';
-import { format, parse } from 'date-fns';
+import { format, parse, isValid } from 'date-fns';
 
 type ImportApplicationsDialogProps = {
   open: boolean;
@@ -103,14 +103,23 @@ export function ImportApplicationsDialog({ open, onOpenChange, onImportComplete 
           const status = statusMap[rawStatus] || 'applied';
 
           let applicationDate;
-          try {
-            // Try parsing M/d/yyyy first
-            const parsedDate = parse(row.dateApplied, 'M/d/yyyy', new Date());
-            applicationDate = parsedDate.toISOString();
-          } catch(e) {
-            applicationDate = new Date().toISOString();
+          const dateString = row.dateApplied;
+          const dateFormats = ['M/d/yyyy', 'MM/dd/yyyy', 'yyyy-MM-dd', 'd/M/yyyy'];
+          let parsedDate: Date | null = null;
+
+          for (const format of dateFormats) {
+            const date = parse(dateString, format, new Date());
+            if (isValid(date)) {
+              parsedDate = date;
+              break;
+            }
           }
 
+          if (parsedDate) {
+            applicationDate = parsedDate.toISOString();
+          } else {
+            applicationDate = new Date().toISOString();
+          }
 
           const applicationData = {
             companyName: row.company || '',
@@ -173,7 +182,7 @@ export function ImportApplicationsDialog({ open, onOpenChange, onImportComplete 
                     <ul className="list-disc list-inside text-xs space-y-1">
                         <li><code className="font-mono bg-muted px-1 py-0.5 rounded">company</code></li>
                         <li><code className="font-mono bg-muted px-1 py-0.5 rounded">role</code></li>
-                        <li><code className="font-mono bg-muted px-1 py-0.5 rounded">dateApplied</code> (M/d/yyyy)</li>
+                        <li><code className="font-mono bg-muted px-1 py-0.5 rounded">dateApplied</code> (e.g., M/d/yyyy)</li>
                         <li><code className="font-mono bg-muted px-1 py-0.5 rounded">status</code></li>
                     </ul>
                      <p className="mt-2 text-xs">Optional headers: <code className="font-mono bg-muted px-1 py-0.5 rounded">notes</code></p>
