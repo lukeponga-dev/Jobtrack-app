@@ -21,7 +21,7 @@ import {Badge} from '../ui/badge';
 import {MoreHorizontal} from 'lucide-react';
 import type {Application} from '../../lib/types';
 import {badgeVariants} from '../ui/badge';
-import { format } from 'date-fns';
+import {format} from 'date-fns';
 
 const statusVariantMap: Record<
   Application['status'],
@@ -35,8 +35,10 @@ const statusVariantMap: Record<
 
 export function ApplicationTable({
   applications,
+  onDelete,
 }: {
   applications: Application[];
+  onDelete: (application: Application) => void;
 }) {
   return (
     <Table>
@@ -76,9 +78,14 @@ export function ApplicationTable({
               </div>
             </TableCell>
             <TableCell className="truncate">{app.position}</TableCell>
-            <TableCell>{format(new Date(app.applicationDate), 'PPP')}</TableCell>
             <TableCell>
-              <Badge variant={statusVariantMap[app.status]} className="capitalize">
+              {format(new Date(app.applicationDate), 'PPP')}
+            </TableCell>
+            <TableCell>
+              <Badge
+                variant={statusVariantMap[app.status]}
+                className="capitalize"
+              >
                 {app.status}
               </Badge>
             </TableCell>
@@ -94,7 +101,10 @@ export function ApplicationTable({
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>View Details</DropdownMenuItem>
                   <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">
+                  <DropdownMenuItem
+                    className="text-destructive"
+                    onClick={() => onDelete(app)}
+                  >
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>

@@ -1,11 +1,10 @@
 import Image from 'next/image';
 import {
   Card,
-  CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from '../ui/card';
 import {
   DropdownMenu,
@@ -19,7 +18,7 @@ import {Button} from '../ui/button';
 import {Badge} from '../ui/badge';
 import {MoreVertical} from 'lucide-react';
 import type {Application} from '../../lib/types';
-import { format } from 'date-fns';
+import {format} from 'date-fns';
 
 const statusVariantMap: Record<
   Application['status'],
@@ -31,7 +30,13 @@ const statusVariantMap: Record<
   rejected: 'destructive',
 };
 
-export function ApplicationCard({application}: {application: Application}) {
+export function ApplicationCard({
+  application,
+  onDelete,
+}: {
+  application: Application;
+  onDelete: (application: Application) => void;
+}) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between gap-4">
@@ -47,7 +52,9 @@ export function ApplicationCard({application}: {application: Application}) {
             />
           )}
           <div className="grid gap-1">
-            <CardTitle className="truncate text-lg">{application.companyName}</CardTitle>
+            <CardTitle className="truncate text-lg">
+              {application.companyName}
+            </CardTitle>
             <CardDescription className="truncate">
               {application.position}
             </CardDescription>
@@ -64,14 +71,20 @@ export function ApplicationCard({application}: {application: Application}) {
             <DropdownMenuSeparator />
             <DropdownMenuItem>View Details</DropdownMenuItem>
             <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={() => onDelete(application)}
+            >
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
       <CardFooter className="flex justify-between">
-        <Badge variant={statusVariantMap[application.status]} className="capitalize">
+        <Badge
+          variant={statusVariantMap[application.status]}
+          className="capitalize"
+        >
           {application.status}
         </Badge>
         <div className="text-sm text-muted-foreground">

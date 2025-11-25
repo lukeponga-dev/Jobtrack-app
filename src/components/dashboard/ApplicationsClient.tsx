@@ -6,12 +6,7 @@ import {useIsMobile} from '../../hooks/use-mobile';
 import type {Application, ApplicationStatus} from '../../lib/types';
 import {Button} from '../ui/button';
 import {Input} from '../ui/input';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '../ui/tabs';
+import {Tabs, TabsContent, TabsList, TabsTrigger} from '../ui/tabs';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +18,10 @@ import {
 import {ApplicationTable} from './ApplicationTable';
 import {ApplicationCards} from './ApplicationCards';
 import {AddApplicationDialog} from './AddApplicationDialog';
+import {DeleteApplicationDialog} from './DeleteApplicationDialog';
+import {useFirebase, deleteDocumentNonBlocking} from '../../firebase';
+import {doc} from 'firebase/firestore';
+import {useToast} from '../../hooks/use-toast';
 
 const statusTabs: {value: ApplicationStatus | 'all'; label: string}[] = [
   {value: 'all', label: 'All'},
@@ -42,7 +41,13 @@ export default function ApplicationsClient({
     'all'
   );
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [applicationToDelete, setApplicationToDelete] =
+    React.useState<Application | null>(null);
+
+  const {firestore, user} = useFirebase();
+  const {toast} = useToast();
 
   const filteredApps = React.useMemo(() => {
     return applications
@@ -54,9 +59,38 @@ export default function ApplicationsClient({
       );
   }, [applications, activeTab, searchTerm]);
 
+  const handleDeleteClick = (application: Application) => {
+    setApplicationToDelete(application);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!firestore || !user || !applicationToDelete) return;
+
+    const docRef = doc(
+      firestore,
+      'users',
+      user.uid,
+      'applications',
+      applicationToDelete.id
+    );
+    deleteDocumentNonBlocking(docRef);
+
+    toast({
+      title: 'Application Deleted',
+      description: `The application for ${applicationToDelete.position} at ${applicationToDelete.companyName} has been deleted.`,
+    });
+
+    setIsDeleteDialogOpen(false);
+    setApplicationToDelete(null);
+  };
+
   return (
     <div className="space-y-4">
-      <Tabs value={activeTab} onValueChange={value => setActiveTab(value as any)}>
+      <Tabs
+        value={activeTab}
+        onValueChange={value => setActiveTab(value as any)}
+      >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <TabsList>
             {statusTabs.map(tab => (
@@ -77,7 +111,7 @@ export default function ApplicationsClient({
             </div>
             <Button
               className="hidden sm:inline-flex"
-              onClick={() => setIsDialogOpen(true)}
+              onClick={() => setIsAddDialogOpen(true)}
             >
               <PlusCircle className="mr-2 h-4 w-4" />
               Add Application
@@ -91,7 +125,7 @@ export default function ApplicationsClient({
               <DropdownMenuContent>
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
+                <DropdownMenuItem onClick={() => setIsAddDialogOpen(true)}>
                   <PlusCircle className="mr-2 h-4 w-4" />
                   Add Application
                 </DropdownMenuItem>
@@ -102,14 +136,28 @@ export default function ApplicationsClient({
         {statusTabs.map(tab => (
           <TabsContent key={tab.value} value={tab.value} className="mt-4">
             {isMobile ? (
-              <ApplicationCards applications={filteredApps} />
+              <ApplicationCards
+                applications={filteredApps}
+                onDelete={handleDeleteClick}
+              />
             ) : (
-              <ApplicationTable applications={filteredApps} />
+              <ApplicationTable
+                applications={filteredApps}
+                onDelete={handleDeleteClick}
+              />
             )}
           </TabsContent>
         ))}
       </Tabs>
-      <AddApplicationDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      <AddApplicationDialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+      />
+      <DeleteApplicationDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 }
