@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import {ClipboardPen, FileText, LayoutGrid, Search, User} from 'lucide-react';
+import {ClipboardPen, FileText, LayoutGrid, Search} from 'lucide-react';
 
 import {
   Sidebar,
