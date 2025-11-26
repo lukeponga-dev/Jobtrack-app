@@ -54,7 +54,9 @@ export function DashboardStats({applications}: {applications: Application[]}) {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Offers</CardTitle>
-            <Trophy className="h-4 w-4 text-accent" />
+            <div className="rounded-lg bg-accent p-2">
+              <Trophy className="h-4 w-4 text-accent-foreground" />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{offerCount}</div>
