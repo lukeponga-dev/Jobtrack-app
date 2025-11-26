@@ -3,3 +3,4 @@ config();
 
 import '@/ai/flows/cover-letter-generation.ts';
 import '@/ai/flows/resume-feedback.ts';
+import '@/ai/flows/job-search.ts';

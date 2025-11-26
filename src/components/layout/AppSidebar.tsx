@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import {ClipboardPen, FileText, LayoutGrid, User} from 'lucide-react';
+import {ClipboardPen, FileText, LayoutGrid, Search, User} from 'lucide-react';
 
 import {
   Sidebar,
@@ -16,6 +16,7 @@ import {Logo} from '../Logo';
 
 const menuItems = [
   {href: '/dashboard', label: 'Dashboard', icon: LayoutGrid},
+  {href: '/search-jobs', label: 'Job Search', icon: Search},
   {href: '/resume-feedback', label: 'Resume Feedback', icon: FileText},
   {
     href: '/cover-letter-generator',
