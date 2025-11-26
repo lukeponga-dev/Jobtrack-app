@@ -11,10 +11,11 @@ import {
   FormField,
   FormItem,
   FormMessage,
+  FormLabel
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Loader2, PlusCircle, Search } from 'lucide-react';
+import { Loader2, PlusCircle, Search, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { searchJobs, type JobPost } from '@/ai/flows/job-search';
 import { useFirebase, addDocumentNonBlocking } from '@/firebase';
@@ -25,6 +26,7 @@ const formSchema = z.object({
   query: z.string().min(3, {
     message: 'Search query must be at least 3 characters.',
   }),
+  location: z.string().optional(),
 });
 
 const JobResultCard = ({ job, onAdd }: { job: JobPost, onAdd: (job: JobPost) => void }) => {
@@ -62,6 +64,7 @@ export default function JobSearchClient() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       query: '',
+      location: '',
     },
   });
 
@@ -115,27 +118,46 @@ export default function JobSearchClient() {
   return (
     <div className="space-y-8">
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-2">
-                <FormField
-                    control={form.control}
-                    name="query"
-                    render={({ field }) => (
-                    <FormItem className="flex-1">
-                        <FormControl>
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <Input placeholder="Search for jobs (e.g., 'Product Manager in SF')" className="pl-10" {...field} />
-                            </div>
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <Button type="submit" disabled={isLoading} className="min-w-[120px]">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <FormField
+                        control={form.control}
+                        name="query"
+                        render={({ field }) => (
+                        <FormItem className="md:col-span-3">
+                            <FormLabel>Job Title or Keyword</FormLabel>
+                            <FormControl>
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input placeholder="e.g., Product Manager" className="pl-10" {...field} />
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                     <FormField
+                        control={form.control}
+                        name="location"
+                        render={({ field }) => (
+                        <FormItem className="md:col-span-2">
+                             <FormLabel>Location</FormLabel>
+                            <FormControl>
+                                <div className="relative">
+                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input placeholder="e.g., San Francisco, CA" className="pl-10" {...field} />
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                </div>
+                <Button type="submit" disabled={isLoading} className="w-full md:w-auto">
                     {isLoading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
-                    'Search'
+                    'Search Jobs'
                     )}
                 </Button>
             </form>

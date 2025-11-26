@@ -21,7 +21,8 @@ const JobPostSchema = z.object({
 });
 
 const JobSearchInputSchema = z.object({
-  query: z.string().describe('The user\'s search query for jobs (e.g., "software engineer in new york").'),
+  query: z.string().describe('The user\'s search query for job titles or keywords (e.g., "software engineer").'),
+  location: z.string().optional().describe('The location to search for jobs in (e.g., "New York, NY").'),
 });
 export type JobSearchInput = z.infer<typeof JobSearchInputSchema>;
 
@@ -44,8 +45,12 @@ const prompt = ai.definePrompt({
 
 For each job posting, you must provide a title, company name, location, a short description (2-3 sentences), and a placeholder URL to a fictional job posting page.
 
-User Query:
-"{{query}}"
+If a location is provided, all job postings should be in or near that location.
+
+User Query: "{{query}}"
+{{#if location}}
+Location: "{{location}}"
+{{/if}}
 
 Generate a list of 10 fictional job postings now.`,
 });
