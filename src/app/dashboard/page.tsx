@@ -11,6 +11,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function DashboardPage() {
   const { firestore, user, isUserLoading } = useFirebase();
+  const [activeTab, setActiveTab] = React.useState('all');
 
   const applicationsCollectionRef = React.useMemo(() => {
     if (!firestore || !user) return null;
@@ -39,8 +40,8 @@ export default function DashboardPage() {
           Here's an overview of your job application journey.
         </p>
       </header>
-      <DashboardStats applications={allApplications} />
-      <ApplicationsClient applications={allApplications} />
+      <DashboardStats applications={allApplications} onStatClick={(status) => setActiveTab(status)} />
+      <ApplicationsClient applications={allApplications} activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
   );
 }

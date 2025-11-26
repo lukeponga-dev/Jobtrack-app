@@ -34,12 +34,13 @@ const statusTabs: {value: ApplicationStatus | 'all'; label: string}[] = [
 
 export default function ApplicationsClient({
   applications,
+  activeTab,
+  setActiveTab,
 }: {
   applications: Application[];
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
 }) {
-  const [activeTab, setActiveTab] = React.useState<ApplicationStatus | 'all'>(
-    'all'
-  );
   const [searchTerm, setSearchTerm] = React.useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = React.useState(false);
@@ -51,6 +52,16 @@ export default function ApplicationsClient({
 
   const {firestore, user} = useFirebase();
   const {toast} = useToast();
+  
+  React.useEffect(() => {
+    // This allows the parent component (DashboardPage) to control the active tab
+    // when a stat card is clicked.
+    if (activeTab !== (document.querySelector('[data-state="active"]') as HTMLElement)?.dataset.value) {
+       const trigger = document.querySelector(`[data-value="${activeTab}"]`) as HTMLElement;
+       trigger?.click();
+    }
+  }, [activeTab]);
+
 
   const filteredApps = React.useMemo(() => {
     return applications
@@ -112,6 +123,7 @@ export default function ApplicationsClient({
   };
 
   return (
+    <>
     <div className="space-y-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <Tabs
@@ -122,7 +134,7 @@ export default function ApplicationsClient({
           <ScrollArea className="w-full sm:w-auto">
             <TabsList>
               {statusTabs.map(tab => (
-                <TabsTrigger key={tab.value} value={tab.value}>
+                <TabsTrigger key={tab.value} data-value={tab.value} value={tab.value}>
                   {tab.label}
                 </TabsTrigger>
               ))}
@@ -146,7 +158,7 @@ export default function ApplicationsClient({
             onClick={() => setIsAddDialogOpen(true)}
           >
             <PlusCircle className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">Add</span>
+            <span className="hidden sm:inline">Add Application</span>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -172,6 +184,16 @@ export default function ApplicationsClient({
       <div className="mt-4">
         {renderContent()}
       </div>
+       {/* FAB for mobile */}
+       <Button
+        className="fixed bottom-24 right-4 z-40 flex h-14 w-14 rounded-full shadow-lg sm:hidden"
+        size="icon"
+        onClick={() => setIsAddDialogOpen(true)}
+      >
+        <PlusCircle className="h-6 w-6" />
+        <span className="sr-only">Add Application</span>
+      </Button>
+
       <AddApplicationDialog
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
@@ -194,5 +216,6 @@ export default function ApplicationsClient({
         />
       )}
     </div>
+    </>
   );
 }
