@@ -177,7 +177,7 @@ export function ImportApplicationsDialog({ open, onOpenChange, onImportComplete 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Import Job Applications</DialogTitle>
+          <DialogTitle>Import from CSV</DialogTitle>
           <DialogDescription>
             Upload a CSV file with your job application data.
           </DialogDescription>

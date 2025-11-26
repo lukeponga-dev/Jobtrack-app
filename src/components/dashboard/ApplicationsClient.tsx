@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {MoreHorizontal, PlusCircle, Search, Upload} from 'lucide-react';
+import {MoreHorizontal, PlusCircle, Search, Upload, Mail} from 'lucide-react';
 import type {Application, ApplicationStatus} from '../../lib/types';
 import {Button} from '../ui/button';
 import {Input} from '../ui/input';
@@ -23,6 +23,7 @@ import {doc} from 'firebase/firestore';
 import {useToast} from '../../hooks/use-toast';
 import { EditApplicationDialog } from './EditApplicationDialog';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import { useRouter } from 'next/navigation';
 
 const statusTabs: {value: ApplicationStatus | 'all'; label: string}[] = [
   {value: 'all', label: 'All'},
@@ -52,6 +53,7 @@ export default function ApplicationsClient({
 
   const {firestore, user} = useFirebase();
   const {toast} = useToast();
+  const router = useRouter();
   
   React.useEffect(() => {
     // This allows the parent component (DashboardPage) to control the active tab
@@ -175,7 +177,11 @@ export default function ApplicationsClient({
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsImportDialogOpen(true)}>
                 <Upload className="mr-2 h-4 w-4" />
-                Import Data
+                Import from CSV
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push('/import-email')}>
+                <Mail className="mr-2 h-4 w-4" />
+                Import from Email
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
