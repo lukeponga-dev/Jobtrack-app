@@ -1,8 +1,8 @@
 
 import {
-  FileText,
-  UploadCloud,
-  Wand2,
+  CalendarCheck,
+  KanbanSquare,
+  Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -12,19 +12,19 @@ import LandingFooter from '@/components/layout/LandingFooter';
 
 const features = [
   {
-    icon: <UploadCloud className="h-8 w-8" />,
-    title: 'Centralized Dashboard',
-    description: 'Track all your job applications in one place. View, add, edit, and filter by status.',
+    icon: <KanbanSquare className="h-8 w-8" />,
+    title: 'Track Everything',
+    description: 'Go beyond spreadsheets. Manage your applications, contacts, and deadlines in one visual pipeline.',
   },
   {
-    icon: <FileText className="h-8 w-8" />,
-    title: 'AI Resume Feedback',
-    description: 'Upload your resume and get instant, AI-powered analysis to improve your chances.',
+    icon: <Sparkles className="h-8 w-8" />,
+    title: 'AI-Powered Insights',
+    description: "Get instant feedback on your resume and generate tailored cover letters that catch recruiters' attention.",
   },
   {
-    icon: <Wand2 className="h-8 w-8" />,
-    title: 'AI Cover Letter Generator',
-    description: 'Instantly generate tailored cover letters based on your resume and a job description.',
+    icon: <CalendarCheck className="h-8 w-8" />,
+    title: 'Stay Organized',
+    description: 'Never miss a follow-up. Set reminders, store notes, and keep your job search on track.',
   },
 ];
 
@@ -36,10 +36,10 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section className="container mx-auto flex flex-col items-center justify-center px-4 py-20 text-center md:py-32">
           <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
-            Supercharge Your Job Search
+            Don't just apply. Apply smarter.
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-            JobTrack is your AI-powered hub to manage applications, get resume feedback, and craft the perfect cover letter.
+            JobTrack is the ultimate toolkit for job seekers, designed to give you an edge in today's competitive market.
           </p>
           <div className="mt-8 flex gap-4">
             <Button asChild size="lg">
