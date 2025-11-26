@@ -5,7 +5,7 @@ import { FirebaseClientProvider } from '../firebase';
 import { ThemeProvider } from '../components/ThemeProvider';
 
 export const metadata: Metadata = {
-  title: 'JobTrack App',
+  title: 'JobTrack: Track your job applications',
   description: 'Track your job applications with ease.',
   manifest: '/manifest.json',
 };
