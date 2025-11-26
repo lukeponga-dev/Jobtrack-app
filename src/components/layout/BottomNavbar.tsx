@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -8,7 +9,7 @@ import { useFirebase } from '@/firebase';
 
 const menuItems = [
     {href: '/dashboard', label: 'Dashboard', icon: LayoutGrid},
-    {href: '/search-jobs', label: 'Search', icon: Search},
+    {href: '/search-jobs', label: 'Find Jobs', icon: Search},
     {href: '/profile', label: 'Profile', icon: User},
 ];
 
