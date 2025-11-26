@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   Card,
-  CardFooter,
+  CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
@@ -42,9 +42,9 @@ export function ApplicationCard({
   onEdit: (application: Application) => void;
 }) {
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="flex flex-row items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between gap-4 p-4">
+        <div className="flex items-center gap-3">
           {application.companyLogoUrl ? (
             <Image
               src={application.companyLogoUrl}
@@ -54,23 +54,25 @@ export function ApplicationCard({
               className="rounded-lg border"
               data-ai-hint="company logo"
             />
-          ): (
+          ) : (
             <div className="flex h-10 w-10 items-center justify-center rounded-lg border bg-muted">
               <Building className="h-5 w-5 text-muted-foreground" />
             </div>
           )}
-          <div className="grid gap-1">
-            <CardTitle className="truncate text-lg">
-              <Link href={`/application/${application.id}`} className="hover:underline">{application.companyName}</Link>
+          <div className="grid flex-1 gap-1">
+            <CardTitle className="truncate text-base leading-tight">
+              <Link href={`/application/${application.id}`} className="hover:underline">
+                {application.companyName}
+              </Link>
             </CardTitle>
-            <CardDescription className="truncate">
+            <CardDescription className="truncate text-sm">
               {application.position}
             </CardDescription>
           </div>
         </div>
-        <DropdownMenu>
+         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="-my-2 -mr-2 flex-shrink-0">
+            <Button variant="ghost" size="icon" className="-my-2 -mr-2 h-8 w-8 flex-shrink-0">
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -90,17 +92,17 @@ export function ApplicationCard({
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
-      <CardFooter className="mt-auto flex justify-between">
+      <CardContent className="flex items-center justify-between px-4 pb-4 pt-0">
         <Badge
           variant={statusVariantMap[application.status]}
           className="capitalize"
         >
           {application.status}
         </Badge>
-        <div className="text-sm text-muted-foreground">
-          {format(new Date(application.applicationDate), 'PPP')}
+        <div className="text-xs text-muted-foreground">
+          {format(new Date(application.applicationDate), 'PP')}
         </div>
-      </CardFooter>
+      </CardContent>
     </Card>
   );
 }
