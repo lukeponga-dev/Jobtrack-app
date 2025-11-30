@@ -9,15 +9,15 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider>
       <div className="relative flex min-h-screen flex-col">
-        <AppSidebar />
-        <SidebarInset>
-            <AppHeader />
-            <main className="flex-1 bg-background p-6 pb-20 sm:p-8">
-              {children}
-            </main>
-        </SidebarInset>
+        <AppHeader />
+        <div className="flex flex-1">
+          <AppSidebar />
+          <main className="flex-1 bg-background p-6 pb-20 sm:p-8">
+            {children}
+          </main>
+        </div>
         <BottomNavbar />
       </div>
     </SidebarProvider>

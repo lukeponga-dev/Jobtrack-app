@@ -59,10 +59,12 @@ export default function AppHeader() {
     : 'U';
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background/80 px-4 backdrop-blur-md sm:justify-end md:px-6">
-      <div className="flex items-center gap-2 sm:hidden">
-        <SidebarTrigger />
-        <Logo />
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background/80 px-4 backdrop-blur-md sm:px-6">
+       <div className="flex items-center gap-2">
+        <SidebarTrigger className="sm:hidden" />
+        <div className="hidden sm:block">
+            <Logo />
+        </div>
       </div>
       <div className="flex items-center gap-2">
         {canInstall && (
