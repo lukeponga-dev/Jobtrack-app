@@ -43,6 +43,8 @@ export function UserAuthForm() {
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
+    if (!auth) return;
+
     setIsLoading(true);
     const form = event.target as HTMLFormElement;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
@@ -67,6 +69,7 @@ export function UserAuthForm() {
   }
 
   const handleGoogleSignIn = async () => {
+    if (!auth) return;
     setIsLoading(true);
     try {
       const provider = new GoogleAuthProvider();
@@ -82,6 +85,14 @@ export function UserAuthForm() {
       setIsLoading(false);
     }
   };
+  
+  if (!auth) {
+    return (
+      <div className="flex justify-center items-center h-48">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <div className="grid gap-6">

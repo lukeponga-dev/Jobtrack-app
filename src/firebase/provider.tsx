@@ -135,10 +135,10 @@ export const useFirebase = (): FirebaseServicesAndUser => {
 };
 
 /** Hook to access Firebase Auth instance. */
-export const useAuth = (): Auth => {
+export const useAuth = (): Auth | null => {
   const { auth, areServicesAvailable } = useFirebase();
-  if (!areServicesAvailable || !auth) {
-    throw new Error('Firebase Auth not available. Check FirebaseProvider props.');
+  if (!areServicesAvailable) {
+    return null;
   }
   return auth;
 };
