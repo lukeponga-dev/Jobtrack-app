@@ -2,26 +2,44 @@
 
 import { firebaseConfig } from './config';
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore'
+import { Auth, getAuth } from 'firebase/auth';
+import { Firestore, getFirestore } from 'firebase/firestore';
+
+let firebaseApp: FirebaseApp | undefined;
+let auth: Auth | undefined;
+let firestore: Firestore | undefined;
 
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
-  if (getApps().length) {
-    return getSdks(getApp());
+  if (typeof window !== 'undefined') {
+    if (!firebaseApp) {
+      if (getApps().length > 0) {
+        firebaseApp = getApp();
+      } else {
+        firebaseApp = initializeApp(firebaseConfig);
+      }
+      auth = getAuth(firebaseApp);
+      firestore = getFirestore(firebaseApp);
+    }
   }
-
-  // The `firebaseConfig` object is manually populated with environment variables.
-  // We'll use this as our primary configuration.
-  const app = initializeApp(firebaseConfig);
-  return getSdks(app);
+  // On the server, we return undefined services.
+  return getSdks(firebaseApp);
 }
 
-export function getSdks(firebaseApp: FirebaseApp) {
+export function getSdks(app?: FirebaseApp) {
+  if (!app) {
+    // Return mock/empty objects for server-side rendering if the app is not initialized
+    return {
+      firebaseApp: null,
+      auth: null,
+      firestore: null,
+    };
+  }
+  
   return {
-    firebaseApp,
-    auth: getAuth(firebaseApp),
-    firestore: getFirestore(firebaseApp)
+    firebaseApp: app,
+    auth: getAuth(app),
+    firestore: getFirestore(app),
   };
 }
 

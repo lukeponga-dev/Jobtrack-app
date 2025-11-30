@@ -6,16 +6,16 @@ import { useRouter } from 'next/navigation';
 import LandingPage from './LandingPage';
 
 export default function RootPageClient() {
-  const { user, isUserLoading } = useFirebase();
+  const { user, isUserLoading, areServicesAvailable } = useFirebase();
   const router = useRouter();
 
   React.useEffect(() => {
-    if (!isUserLoading && user) {
+    if (areServicesAvailable && !isUserLoading && user) {
       router.replace('/dashboard');
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isUserLoading, router, areServicesAvailable]);
 
-  if (isUserLoading) {
+  if (!areServicesAvailable || isUserLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
