@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {MoreHorizontal, PlusCircle, Search, Upload, Mail} from 'lucide-react';
+import {MoreHorizontal, PlusCircle, Search, Upload, Mail, List, LayoutGrid} from 'lucide-react';
 import type {Application, ApplicationStatus} from '../../lib/types';
 import {Button} from '../ui/button';
 import {Input} from '../ui/input';
@@ -24,6 +24,7 @@ import {useToast} from '../../hooks/use-toast';
 import { EditApplicationDialog } from './EditApplicationDialog';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 import { useRouter } from 'next/navigation';
+import { ApplicationTable } from './ApplicationTable';
 
 const statusTabs: {value: ApplicationStatus | 'all'; label: string}[] = [
   {value: 'all', label: 'All'},
@@ -50,6 +51,8 @@ export default function ApplicationsClient({
   const [applicationToEdit, setApplicationToEdit] = React.useState<Application | null>(null);
   const [applicationToDelete, setApplicationToDelete] =
     React.useState<Application | null>(null);
+  const [view, setView] = React.useState<'card' | 'table'>('card');
+
 
   const {firestore, user} = useFirebase();
   const {toast} = useToast();
@@ -114,13 +117,26 @@ export default function ApplicationsClient({
   }
 
   const renderContent = () => {
+    if (view === 'card') {
+      return (
+        <div className="md:hidden">
+          <ApplicationCards
+            applications={filteredApps}
+            onDelete={handleDeleteClick}
+            onEdit={handleEditClick}
+            onAdd={() => setIsAddDialogOpen(true)}
+          />
+        </div>
+      );
+    }
     return (
-      <ApplicationCards
-        applications={filteredApps}
-        onDelete={handleDeleteClick}
-        onEdit={handleEditClick}
-        onAdd={() => setIsAddDialogOpen(true)}
-      />
+      <div className="hidden md:block">
+        <ApplicationTable
+          applications={filteredApps}
+          onDelete={handleDeleteClick}
+          onEdit={handleEditClick}
+        />
+      </div>
     );
   };
 
@@ -155,6 +171,22 @@ export default function ApplicationsClient({
               onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
+           <div className="hidden items-center gap-2 md:flex">
+             <Button
+                variant={view === 'table' ? 'secondary' : 'ghost'}
+                size="icon"
+                onClick={() => setView('table')}
+              >
+                <List className="h-4 w-4" />
+             </Button>
+             <Button
+                variant={view === 'card' ? 'secondary' : 'ghost'}
+                size="icon"
+                onClick={() => setView('card')}
+              >
+                <LayoutGrid className="h-4 w-4" />
+             </Button>
+          </div>
           <Button
             className="hidden sm:inline-flex"
             onClick={() => setIsAddDialogOpen(true)}
@@ -188,7 +220,30 @@ export default function ApplicationsClient({
         </div>
       </div>
       <div className="mt-4">
-        {renderContent()}
+        <div className="md:hidden">
+            <ApplicationCards
+            applications={filteredApps}
+            onDelete={handleDeleteClick}
+            onEdit={handleEditClick}
+            onAdd={() => setIsAddDialogOpen(true)}
+            />
+        </div>
+        <div className="hidden md:block">
+            {view === 'card' ? (
+                <ApplicationCards
+                applications={filteredApps}
+                onDelete={handleDeleteClick}
+                onEdit={handleEditClick}
+                onAdd={() => setIsAddDialogOpen(true)}
+                />
+            ) : (
+                <ApplicationTable
+                applications={filteredApps}
+                onDelete={handleDeleteClick}
+                onEdit={handleEditClick}
+                />
+            )}
+        </div>
       </div>
        {/* FAB for mobile */}
        <Button
