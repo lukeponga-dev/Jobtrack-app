@@ -14,7 +14,7 @@ export default function DashboardLayout({
         <AppSidebar />
         <SidebarInset>
             <AppHeader />
-            <main className="flex-1 bg-background p-4 pb-20 sm:p-6 lg:p-8">
+            <main className="flex-1 bg-background p-6 pb-20 sm:p-8">
               {children}
             </main>
         </SidebarInset>

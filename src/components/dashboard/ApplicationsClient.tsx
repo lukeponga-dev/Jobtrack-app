@@ -116,30 +116,6 @@ export default function ApplicationsClient({
     });
   }
 
-  const renderContent = () => {
-    if (view === 'card') {
-      return (
-        <div className="md:hidden">
-          <ApplicationCards
-            applications={filteredApps}
-            onDelete={handleDeleteClick}
-            onEdit={handleEditClick}
-            onAdd={() => setIsAddDialogOpen(true)}
-          />
-        </div>
-      );
-    }
-    return (
-      <div className="hidden md:block">
-        <ApplicationTable
-          applications={filteredApps}
-          onDelete={handleDeleteClick}
-          onEdit={handleEditClick}
-        />
-      </div>
-    );
-  };
-
   return (
     <>
     <div className="space-y-4">
