@@ -1,7 +1,16 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/cover-letter-generation.ts';
-import '@/ai/flows/resume-feedback.ts';
-import '@/ai/flows/job-search.ts';
-import '@/ai/flows/email-parser.ts';
+import { genkit } from 'genkit';
+import { googleAI } from '@genkit-ai/google-genai';
+
+import './flows/cover-letter-generation.ts';
+import './flows/resume-feedback.ts';
+import './flows/job-search.ts';
+import './flows/email-parser.ts';
+
+genkit({
+    plugins: [googleAI()],
+    logLevel: 'debug',
+    enableTracingAndMetrics: true,
+});
