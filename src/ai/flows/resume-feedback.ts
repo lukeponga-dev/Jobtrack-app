@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview This file defines a Genkit flow for providing AI-powered feedback on resumes.
@@ -36,7 +37,7 @@ const resumeFeedbackPrompt = ai.definePrompt({
   name: 'resumeFeedbackPrompt',
   input: {schema: ResumeFeedbackInputSchema},
   output: {schema: ResumeFeedbackOutputSchema},
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-1.5-flash',
   prompt: `You are an AI resume expert providing feedback on resumes.
 
   Analyze the resume provided and provide the following feedback:
