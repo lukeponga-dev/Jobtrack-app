@@ -1,76 +1,78 @@
+
 # JobTrack: Your AI-Powered Job Application Hub
 
-JobTrack is a modern, full-stack web application designed to streamline and supercharge your job search. Built with Next.js, Firebase, and cutting-edge GenAI, it provides a comprehensive suite of tools to manage applications, get AI-driven feedback, and craft the perfect cover letter. It features a sleek, mobile-first design and can be installed on any device for a native-app experience.
+![JobTrack Dashboard](https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxqb2IlMjBzZWFyY2glMjBvcmdhbml6YXRpb258ZW58MHx8fHwxNzE4NzU0MDIwfDA&ixlib=rb-4.1.0&q=80&w=1080)
+
+**JobTrack is a modern, full-stack web application designed to streamline and supercharge your job search.** Built with Next.js, Firebase, and cutting-edge GenAI, it provides a comprehensive suite of tools to manage applications, get AI-driven feedback, and craft the perfect cover letter.
 
 This project was bootstrapped and developed with [Firebase Studio](https://firebase.google.com/docs/studio).
 
-## ✨ Features
+<p align="center">
+  <a href="https://nextjs.org/" target="_blank"><img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js"></a>
+  <a href="https://firebase.google.com/" target="_blank"><img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase"></a>
+  <a href="https://firebase.google.com/docs/genkit" target="_blank"><img src="https://img.shields.io/badge/Genkit-6E4EFF?style=for-the-badge&logo=google&logoColor=white" alt="Genkit"></a>
+  <a href="https://tailwindcss.com/" target="_blank"><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
+</p>
 
-*   **🏠 Landing Page:** A beautiful, welcoming page for new and returning users.
-*   **📄 Application Dashboard:** A central hub to track all your job applications. View, add, edit, delete, and filter your applications by status (Applied, Interview, Offer, Rejected).
-*   **⬆️ CSV Import:** Easily import your existing job application data from a CSV file to get started quickly.
-*   **🤖 AI Resume Feedback:** Upload your resume (PDF or DOCX) and receive instant, AI-powered analysis. Get an overall score, actionable suggestions for improvement, and relevant keyword optimizations to beat the Applicant Tracking Systems (ATS).
-*   **✍️ AI Cover Letter Generator:** Paste your resume and a job description to instantly generate a tailored cover letter. You can even choose the tone that best fits the company culture.
-*   **📱 Responsive & Installable:** A fully responsive, mobile-first UI with a collapsible sidebar and a bottom navigation bar for easy access. Install the app to your device home screen for a native PWA experience.
-*   **👤 User Authentication & Profile:** Securely sign in with Google or email/password. Manage your profile details on a dedicated settings page.
-*   **☀️ Dark & Light Mode:** A sleek, modern interface with a theme toggle to switch between light and dark modes.
+## ✨ Core Features
+
+-   **🏠 Beautiful Landing Page:** A welcoming page for new and returning users.
+-   **📊 Application Dashboard:** A central hub to track all your job applications. View, add, edit, delete, and filter your applications by status (Applied, Interview, Offer, Rejected).
+-   **📱 Responsive & Installable:** A fully responsive, mobile-first UI with a collapsible sidebar and a bottom navigation bar. Install the app to your device home screen for a native PWA experience.
+-   **👤 User Authentication:** Securely sign in with Google or email/password.
+-   **⚙️ Profile Management:** Manage your name and password on a dedicated settings page.
+-   **☀️ Dark & Light Mode:** A sleek, modern interface with an automatic theme toggle.
+
+## 🤖 AI-Powered Capabilities
+
+Leverage the power of Google's Gemini models to get a competitive edge:
+
+-   **🔍 AI Job Search:** Discover fictional job opportunities tailored to your search queries.
+-   **📄 AI Resume Feedback:** Upload your resume (PDF or DOCX) and receive instant, AI-powered analysis, including an overall score, actionable suggestions, and keyword optimizations to beat Applicant Tracking Systems (ATS).
+-   **✍️ AI Cover Letter Generator:** Paste your resume and a job description to instantly generate a tailored cover letter in various tones.
+-   **📥 CSV & Email Import:** Easily import your existing job application data from a CSV file or by pasting raw email content to get started quickly.
 
 ## 🚀 Tech Stack
 
-*   **Framework:** [Next.js](https://nextjs.org/) (App Router)
-*   **Authentication:** [Firebase Authentication](https://firebase.google.com/docs/auth)
-*   **Database:** [Cloud Firestore](https://firebase.google.com/docs/firestore)
-*   **Generative AI:** [Genkit](https://firebase.google.com/docs/genkit) with Google's Gemini models
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/)
-*   **Deployment:** Ready for deployment on services like [Firebase App Hosting](https://firebase.google.com/docs/app-hosting) or [Render](https://render.com/).
+-   **Framework:** [Next.js](https://nextjs.org/) (App Router)
+-   **Authentication:** [Firebase Authentication](https://firebase.google.com/docs/auth)
+-   **Database:** [Cloud Firestore](https://firebase.google.com/docs/firestore)
+-   **Generative AI:** [Genkit](https://firebase.google.com/docs/genkit) with Google's Gemini models
+-   **Styling:** [Tailwind CSS](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/)
+-   **Deployment:** Ready for deployment on services like [Firebase App Hosting](https://firebase.google.com/docs/app-hosting) or [Render](https://render.com/).
 
-## 🏁 Getting Started
+## 🏁 Getting Started with Firebase Studio
 
-### 1. Clone the Repository
+This project is optimized for development within **Firebase Studio**. The environment is pre-configured, and all necessary services are provisioned automatically.
 
-```bash
-git clone https://github.com/your-username/jobtrack.git
-cd jobtrack
-```
+### 1. Run the Application
 
-### 2. Install Dependencies
+Simply run the application within the Firebase Studio environment. The development server will start, and the app will be accessible in the integrated web preview.
 
-```bash
-npm install
-```
+### 2. Set Up Environment Variables
 
-### 3. Firebase Setup
+AI features require a Google AI API key.
 
-This project requires a Firebase project to run.
-
-1.  **Create a Firebase Project:** Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
-2.  **Enable Authentication:** In the Firebase Console, go to **Build > Authentication** and enable the **Email/Password** and **Google** sign-in methods.
-3.  **Enable Firestore:** In the Firebase Console, go to **Build > Firestore Database** and create a database. Start in **test mode** for initial development (you can secure it later with the provided `firestore.rules`).
-4.  **Get Firebase Config:**
-    *   In your Firebase project, go to **Project Settings** (the gear icon).
-    *   Under "Your apps," create a new **Web app**.
-    *   Copy the `firebaseConfig` object.
-5.  **Create Environment File:**
-    *   In the root of your project, create a new file named `.env.local`.
-    *   Add your Firebase configuration to this file. It should look like this:
+1.  Create a `.env` file in the root of the project.
+2.  Add your API key to the file:
 
     ```env
-    NEXT_PUBLIC_FIREBASE_API_KEY="your-api-key"
-    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="your-auth-domain"
-    NEXT_PUBLIC_FIREBASE_PROJECT_ID="your-project-id"
-    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET="your-storage-bucket"
-    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID="your-sender-id"
-    NEXT_PUBLIC_FIREBASE_APP_ID="your-app-id"
+    GEMINI_API_KEY="your-google-ai-api-key"
     ```
 
-### 4. Run the Development Server
+    You can obtain an API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
 
-```bash
-npm run dev
-```
+### 3. Automatic Backend Provisioning
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Firebase Studio automatically handles the backend setup:
+
+-   A Firebase project is created or connected for you.
+-   Firebase Authentication and Firestore are enabled.
+-   Security rules from `firestore.rules` are automatically deployed.
+-   The necessary Firebase configuration is injected into the app.
+
+There is no need to manually create a Firebase project or configure service credentials.
 
 ## 🌐 Deployment
 
-This application is ready to be deployed to any hosting service that supports Next.js, such as [Firebase App Hosting](https://firebase.google.com/docs/app-hosting), Vercel, or Render. The included `apphosting.yaml` and `render.yaml` files provide configuration for those specific platforms.
+This application is ready to be deployed to any hosting service that supports Next.js. The included `apphosting.yaml` and `render.yaml` files provide out-of-the-box configuration for Firebase App Hosting and Render, respectively.
