@@ -27,7 +27,62 @@ graph TD
     B -- "Renders UI (SSR/RSC)" --> A
 ```
 
-## 2. Frontend Architecture
+## 2. AI Gateway Architecture
+
+The application's AI capabilities are orchestrated through a pattern that functions as an **AI Gateway**. Genkit serves as the core of this layer, providing a unified interface for interacting with different AI models and services. This approach ensures the application is not locked into a single provider and can gracefully handle errors, manage costs, and adapt to new models.
+
+```mermaid
+graph TD
+    subgraph "User's Device"
+        Frontend[("Frontend (React, Next.js, Tailwind)")]
+    end
+
+    subgraph "Application Server"
+        Backend[("Backend (Next.js Server Actions)")]
+    end
+
+    subgraph "AI Gateway Layer (Genkit)"
+        AIGateway("
+            <b>AI Gateway (Genkit)</b>
+            - Unified API Endpoint
+            - Routing & Fallbacks
+            - Spend Monitoring
+            - Embeddings
+            - Bring Your Own Key (BYOK)
+        ")
+    end
+
+    subgraph "AI Model Providers"
+        Provider1[("Google Gemini")]
+        Provider2[("Anthropic Claude")]
+        Provider3[("OpenAI GPT-4")]
+        Provider4[("...and more")]
+    end
+
+    Frontend -- "1. User Input (e.g., Resume Text)" --> Backend
+    Backend -- "2. Request" --> AIGateway
+    AIGateway -- "3. Routes to Best/Available Model" --> Provider1
+    AIGateway -.-> Provider2
+    AIGateway -.-> Provider3
+    AIGateway -.-> Provider4
+    Provider1 -- "4. Result" --> AIGateway
+    Provider2 -.-> AIGateway
+    Provider3 -.-> AIGateway
+    Provider4 -.-> AIGateway
+    AIGateway -- "5. Unified Response" --> Backend
+    Backend -- "6. Renders UI Update" --> Frontend
+
+    style Frontend fill:#f1f5f9,stroke:#64748b,stroke-width:2px
+    style Backend fill:#f1f5f9,stroke:#64748b,stroke-width:2px
+    style AIGateway fill:#eef2ff,stroke:#6366f1,stroke-width:2px,color:#1e293b
+    style Provider1 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#1e293b
+    style Provider2 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#1e293b
+    style Provider3 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#1e293b
+    style Provider4 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#1e293b
+```
+
+
+## 3. Frontend Architecture
 
 The frontend is built with **React** and **Next.js**, utilizing the App Router for routing and server-side rendering.
 
@@ -40,7 +95,7 @@ The frontend is built with **React** and **Next.js**, utilizing the App Router f
     -   The `useFirebase` hook provides a centralized context for accessing Firebase services (Auth, Firestore) and user state throughout the application.
     -   Data from Firestore is fetched in real-time using custom hooks (`useCollection`, `useDoc`) that wrap `onSnapshot` listeners.
 
-## 3. Backend & Data Architecture
+## 4. Backend & Data Architecture
 
 The backend is powered by Google's Firebase platform, which handles authentication and data storage securely.
 
@@ -55,7 +110,7 @@ The backend is powered by Google's Firebase platform, which handles authenticati
       ```
     -   **Security**: [Firestore Security Rules](firestore.rules) enforce a strict ownership model. The rules ensure that a user can only read and write data located within their own document path (e.g., `/users/{request.auth.uid}/...`). This prevents data leakage between users.
 
-## 4. AI Integration (Genkit)
+## 5. AI Integration (Genkit)
 
 All generative AI features are implemented using **Genkit**, a framework for building production-ready AI applications.
 
@@ -68,7 +123,7 @@ All generative AI features are implemented using **Genkit**, a framework for bui
 -   **Models**: The flows use **Google's Gemini models** (e.g., `gemini-pro`) via the `@genkit-ai/googleai` plugin.
 -   **Data Handling**: For flows requiring file input (like resume analysis), the client converts the file into a Base64-encoded data URI before sending it to the server-side flow.
 
-## 5. Key Directories
+## 6. Key Directories
 
 -   **/src/app/**: Contains all pages and layouts for the Next.js App Router. Each folder represents a route.
 -   **/src/components/**: Home to all reusable React components, organized by feature (e.g., `dashboard`, `auth`) and UI primitives (`ui`).
@@ -76,4 +131,5 @@ All generative AI features are implemented using **Genkit**, a framework for bui
 -   **/src/ai/**: Houses all Genkit code, including the central `genkit.ts` configuration and the individual `flows`.
 -   **/src/lib/**: A collection of shared utilities, type definitions (`types.ts`), and static data.
 -   **/docs/**: Contains the `backend.json` file, which serves as a blueprint for the app's data structures.
+
 
