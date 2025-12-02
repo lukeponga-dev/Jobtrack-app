@@ -8,6 +8,7 @@
 This project was bootstrapped and developed with [Firebase Studio](https://firebase.google.com/docs/studio).
 
 <p align="center">
+  <a href="https://play.google.com/store/apps/details?id=co.median.android.lpppkjr" target="_blank"><img src="https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white" alt="Get it on Google Play"></a>
   <a href="https://nextjs.org/" target="_blank"><img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js"></a>
   <a href="https://firebase.google.com/" target="_blank"><img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase"></a>
   <a href="https://firebase.google.com/docs/genkit" target="_blank"><img src="https://img.shields.io/badge/Genkit-6E4EFF?style=for-the-badge&logo=google&logoColor=white" alt="Genkit"></a>
