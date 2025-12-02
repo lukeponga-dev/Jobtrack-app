@@ -20,7 +20,7 @@ import {RadioGroup, RadioGroupItem} from '../../components/ui/radio-group';
 import {Card, CardContent, CardHeader, CardTitle} from '../../components/ui/card';
 import {Clipboard, Loader2, Wand2} from 'lucide-react';
 import {useToast} from '../../hooks/use-toast';
-import {generateCoverLetter} from '../../ai/flows/cover-letter-generation';
+import {streamCoverLetter} from '../../ai/flows/cover-letter-generation';
 
 const formSchema = z.object({
   resumeText: z.string().min(100, {
@@ -50,8 +50,17 @@ export default function CoverLetterClient() {
     setIsLoading(true);
     setGeneratedLetter('');
     try {
-      const result = await generateCoverLetter(values);
-      setGeneratedLetter(result.coverLetter);
+      const stream = await streamCoverLetter(values);
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        setGeneratedLetter(prev => prev + chunk);
+      }
+
     } catch (error) {
       console.error('Error generating cover letter:', error);
       toast({
@@ -166,14 +175,14 @@ export default function CoverLetterClient() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Generated Cover Letter</CardTitle>
-            {generatedLetter && (
+            {generatedLetter && !isLoading && (
               <Button variant="ghost" size="icon" onClick={handleCopy}>
                 <Clipboard className="h-4 w-4" />
               </Button>
             )}
           </CardHeader>
           <CardContent>
-            {isLoading ? (
+            {isLoading && !generatedLetter && (
               <div className="flex h-full min-h-96 items-center justify-center">
               <div className="flex flex-col items-center gap-4">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -181,13 +190,15 @@ export default function CoverLetterClient() {
                 <p className="text-sm text-muted-foreground">Crafting your cover letter.</p>
               </div>
             </div>
-            ) : (
-              <Textarea
-                readOnly
-                value={generatedLetter || 'Your generated cover letter will appear here...'}
-                className="h-96 min-h-[500px] bg-muted/50 font-mono text-sm"
-              />
             )}
+             <div
+                className="prose prose-sm dark:prose-invert min-h-[500px] w-full max-w-none rounded-md border bg-muted/50 p-4 font-mono text-sm"
+              >
+                {generatedLetter || 'Your generated cover letter will appear here...'}
+                {isLoading && (
+                  <span className="inline-block h-4 w-2 animate-pulse bg-foreground" />
+                )}
+              </div>
           </CardContent>
         </Card>
       </div>
