@@ -6,9 +6,33 @@ import { useCollection, useFirebase } from '../../firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Application } from '../../lib/types';
 import { Skeleton } from '../../components/ui/skeleton';
-import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
 import { ApplicationStatusChart } from '@/components/dashboard/ApplicationStatusChart';
+
+const DashboardSkeletons = () => (
+  <>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Skeleton className="h-24" />
+        <Skeleton className="h-24" />
+        <Skeleton className="h-24" />
+        <Skeleton className="h-24" />
+        <Skeleton className="h-24" />
+        <Skeleton className="h-24" />
+    </div>
+    <div className="space-y-4">
+        <Skeleton className="h-10 w-full" />
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <Skeleton className="h-28" />
+            <Skeleton className="h-28" />
+            <Skeleton className="h-28" />
+        </div>
+    </div>
+  </>
+)
+
+const ChartSkeleton = () => (
+    <Skeleton className="h-[350px] w-full" />
+)
+
 
 export default function DashboardPage() {
   const { firestore, user, isUserLoading } = useFirebase();
@@ -23,14 +47,6 @@ export default function DashboardPage() {
   const { data: applications, isLoading: areApplicationsLoading } = useCollection<Application>(applicationsQuery);
 
   const isLoading = isUserLoading || areApplicationsLoading;
-  
-  if (isLoading || !user) {
-    return (
-       <div className="flex h-screen items-center justify-center">
-         <Loader2 className="h-12 w-12 animate-spin text-primary" />
-       </div>
-    );
-  }
 
   const allApplications = applications || [];
 
@@ -44,11 +60,21 @@ export default function DashboardPage() {
       </header>
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="flex flex-col gap-8 lg:col-span-2">
-            <DashboardStats applications={allApplications} onStatClick={(status) => setActiveTab(status)} />
-            <ApplicationsClient applications={allApplications} activeTab={activeTab} setActiveTab={setActiveTab} />
+            {isLoading ? (
+                <DashboardSkeletons />
+            ) : (
+                <>
+                    <DashboardStats applications={allApplications} onStatClick={(status) => setActiveTab(status)} />
+                    <ApplicationsClient applications={allApplications} activeTab={activeTab} setActiveTab={setActiveTab} />
+                </>
+            )}
         </div>
         <div className="lg:col-span-1">
-            <ApplicationStatusChart applications={allApplications} />
+            {isLoading ? (
+                <ChartSkeleton />
+            ) : (
+                <ApplicationStatusChart applications={allApplications} />
+            )}
         </div>
       </div>
     </div>
