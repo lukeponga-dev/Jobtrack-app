@@ -8,6 +8,7 @@ import { Application } from '../../lib/types';
 import { Skeleton } from '../../components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { ApplicationStatusChart } from '@/components/dashboard/ApplicationStatusChart';
 
 export default function DashboardPage() {
   const { firestore, user, isUserLoading } = useFirebase();
@@ -41,8 +42,15 @@ export default function DashboardPage() {
           Here's an overview of your job application journey.
         </p>
       </header>
-      <DashboardStats applications={allApplications} onStatClick={(status) => setActiveTab(status)} />
-      <ApplicationsClient applications={allApplications} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="flex flex-col gap-8 lg:col-span-2">
+            <DashboardStats applications={allApplications} onStatClick={(status) => setActiveTab(status)} />
+            <ApplicationsClient applications={allApplications} activeTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
+        <div className="lg:col-span-1">
+            <ApplicationStatusChart applications={allApplications} />
+        </div>
+      </div>
     </div>
   );
 }
