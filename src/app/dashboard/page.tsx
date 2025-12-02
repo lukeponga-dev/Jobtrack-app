@@ -3,7 +3,7 @@ import React from 'react';
 import { DashboardStats } from '../../components/dashboard/DashboardStats';
 import ApplicationsClient from '../../components/dashboard/ApplicationsClient';
 import { useCollection, useFirebase } from '../../firebase';
-import { collection } from 'firebase/firestore';
+import { collection, query, orderBy } from 'firebase/firestore';
 import { Application } from '../../lib/types';
 import { Skeleton } from '../../components/ui/skeleton';
 import { useRouter } from 'next/navigation';
@@ -13,12 +13,13 @@ export default function DashboardPage() {
   const { firestore, user, isUserLoading } = useFirebase();
   const [activeTab, setActiveTab] = React.useState('all');
 
-  const applicationsCollectionRef = React.useMemo(() => {
+  const applicationsQuery = React.useMemo(() => {
     if (!firestore || !user) return null;
-    return collection(firestore, 'users', user.uid, 'applications');
+    const collRef = collection(firestore, 'users', user.uid, 'applications');
+    return query(collRef, orderBy('applicationDate', 'desc'));
   }, [firestore, user]);
 
-  const { data: applications, isLoading: areApplicationsLoading } = useCollection<Application>(applicationsCollectionRef as any);
+  const { data: applications, isLoading: areApplicationsLoading } = useCollection<Application>(applicationsQuery);
 
   const isLoading = isUserLoading || areApplicationsLoading;
   
