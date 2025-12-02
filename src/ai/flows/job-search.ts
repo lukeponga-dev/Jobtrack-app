@@ -11,6 +11,7 @@
 
 import {ai} from '../genkit';
 import {z} from 'genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 
 const JobPostSchema = z.object({
   id: z.string().describe('A unique identifier for the job post.'),
@@ -42,7 +43,7 @@ const prompt = ai.definePrompt({
   name: 'jobSearchPrompt',
   input: {schema: JobSearchInputSchema},
   output: {schema: JobSearchOutputSchema},
-  model: 'googleai/gemini-pro',
+  model: googleAI.model('gemini-pro'),
   prompt: `You are a helpful job search assistant. Your task is to generate a list of 10 fictional job postings based on the user's search query.
 
 For each job posting, you must provide a title, company name, location, a short description (2-3 sentences), and a placeholder URL to a fictional job posting page.
