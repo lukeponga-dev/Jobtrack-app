@@ -79,26 +79,39 @@ export default function JobSearchClient() {
       console.error('Error searching for jobs:', error);
       const errorMessage = error.message || '';
       
-      if (errorMessage.includes('403') && errorMessage.includes('are blocked')) {
-         toast({
-          variant: 'destructive',
-          title: 'AI Service Disabled',
-          description: (
-            <div>
-              <p>The Generative Language API is not enabled for your project.</p>
-              <a
-                href="https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 inline-block text-sm text-white underline"
-              >
-                Click here to enable it
-              </a>
-              , then try again.
-            </div>
-          ),
-          duration: 10000,
-         });
+      if (errorMessage.includes('are blocked')) {
+        if (errorMessage.includes('referer')) {
+             toast({
+              variant: 'destructive',
+              title: 'API Key Security Issue',
+              description: (
+                <div>
+                  <p>Your API key is restricted by HTTP referrer. Server-side requests are blocked. Please remove this restriction from your API key in the Google Cloud Console.</p>
+                </div>
+              ),
+              duration: 15000,
+             });
+        } else {
+             toast({
+              variant: 'destructive',
+              title: 'AI Service Disabled',
+              description: (
+                <div>
+                  <p>The Generative Language API is not enabled for your project.</p>
+                  <a
+                    href="https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-block text-sm text-white underline"
+                  >
+                    Click here to enable it
+                  </a>
+                  , then try again.
+                </div>
+              ),
+              duration: 10000,
+             });
+        }
       } else {
          toast({
           variant: 'destructive',

@@ -69,7 +69,7 @@ Generate a list of 10 fictional job postings now.`,
         const {output} = await prompt(input);
         return output!;
     } catch (err) {
-        console.error("Job search failed, using fallback.", err);
+        console.error("Job search failed, re-throwing error for client.", err);
         // Rethrow the original error to be handled by the client
         throw err;
     }
