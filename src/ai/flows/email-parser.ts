@@ -11,7 +11,7 @@
 
 import { ai } from '../genkit';
 import { z } from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
+import {googleAI} from '@genkit-ai/google-genai';
 
 const ParsedApplicationSchema = z.object({
   id: z.string().describe("A temporary unique ID for this parsed application."),
@@ -56,7 +56,7 @@ const emailParserFlow = ai.defineFlow(
       name: 'emailParserPrompt',
       input: { schema: EmailParseInputSchema },
       output: { schema: EmailParseOutputSchema },
-      model: googleAI.model('gemini-pro'),
+      model: googleAI.model('gemini-1.0-pro'),
       prompt: `You are an expert data extraction agent specializing in job applications. Your task is to parse the following raw email text and extract all job applications into a structured JSON format.
 
 RULES:

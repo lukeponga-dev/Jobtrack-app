@@ -12,7 +12,7 @@
 
 import {ai} from '../genkit';
 import {z} from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
+import {googleAI} from '@genkit-ai/google-genai';
 
 const CoverLetterInputSchema = z.object({
   resumeText: z
@@ -38,6 +38,7 @@ const coverLetterPrompt = ai.definePrompt({
   name: 'coverLetterPrompt',
   input: {schema: CoverLetterInputSchema},
   output: {schema: CoverLetterOutputSchema},
+  model: googleAI.model('gemini-1.0-pro'),
   prompt: `You are an expert career coach specializing in writing highly effective cover letters.
 
 Your task is to create a compelling cover letter based on the provided resume and job description. The primary goal is to highlight the alignment between the candidate's skills and experience (from the resume) and the specific requirements of the job (from the job description).
@@ -87,7 +88,7 @@ const generateCoverLetterStreamFlow = ai.defineFlow(
   },
   async (input) => {
     const { stream } = await ai.generate({
-        model: googleAI.model('gemini-pro'),
+        model: googleAI.model('gemini-1.0-pro'),
         prompt: `You are an expert career coach specializing in writing highly effective cover letters.
 
 Your task is to create a compelling cover letter based on the provided resume and job description. The primary goal is to highlight the alignment between the candidate's skills and experience (from the resume) and the specific requirements of the job (from the job description).

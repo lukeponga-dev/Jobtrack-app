@@ -10,7 +10,7 @@
 
 import {ai} from '../genkit';
 import {z} from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
+import {googleAI} from '@genkit-ai/google-genai';
 
 const ResumeFeedbackInputSchema = z.object({
   resumeDataUri: z
@@ -45,7 +45,7 @@ const resumeFeedbackFlow = ai.defineFlow(
       name: 'resumeFeedbackPrompt',
       input: {schema: ResumeFeedbackInputSchema},
       output: {schema: ResumeFeedbackOutputSchema},
-      model: googleAI.model('gemini-pro'),
+      model: googleAI.model('gemini-1.0-pro'),
       prompt: `You are an AI resume expert providing feedback on resumes.
 
   Analyze the resume provided and provide the following feedback:
