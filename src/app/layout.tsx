@@ -3,7 +3,7 @@ import './globals.css';
 import {Toaster} from '../components/ui/toaster';
 import { FirebaseClientProvider } from '../firebase';
 import { ThemeProvider } from '../components/ThemeProvider';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: 'JobTrack: Track your job applications',
