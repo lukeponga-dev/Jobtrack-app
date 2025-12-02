@@ -75,7 +75,13 @@ Email Content:
 Extract the application data now.`,
     });
 
-    const { output } = await prompt(input);
-    return output!;
+    try {
+      const { output } = await prompt(input);
+      return output!;
+    } catch (err) {
+      console.error("Email parsing failed, using fallback.", err);
+      // Fallback to returning an empty list of applications
+      return { applications: [] };
+    }
   }
 );

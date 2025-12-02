@@ -56,6 +56,30 @@ Tone: {{tone}}
 Generate the cover letter now.`,
 });
 
+const fallbackCoverLetter = `[Your Name]
+[Your Address] | [Your Phone Number] | [Your Email]
+
+[Date]
+
+[Hiring Manager Name] (If known, otherwise use title)
+[Hiring Manager Title]
+[Company Name]
+[Company Address]
+
+Dear [Mr./Ms./Mx. Last Name],
+
+I am writing to express my keen interest in the [Job Title] position at [Company Name], which I discovered through [Platform where you saw the advertisement, e.g., LinkedIn, company website]. Having followed [Company Name]'s work in [mention something specific, e.g., the tech industry, their recent project], I am deeply impressed by your commitment to [mention a company value or achievement].
+
+With a background in [Your Field] and experience in [mention 1-2 key skills from your resume, e.g., 'full-stack web development' and 'agile methodologies'], I am confident that I possess the skills and qualifications necessary to excel in this role. My resume highlights my experience in [mention a key achievement, e.g., 'leading a project that increased user engagement by 15%'].
+
+I am particularly drawn to this opportunity because [explain why you are interested in this specific role and company]. My skills in [mention another skill] align perfectly with the requirements for this position.
+
+I am eager to discuss how my experience can benefit [Company Name]. Thank you for your time and consideration. I look forward to hearing from you soon.
+
+Sincerely,
+[Your Name]
+`;
+
 
 export async function generateCoverLetter(input: CoverLetterInput): Promise<CoverLetterOutput> {
   return generateCoverLetterFlow(input);
@@ -73,8 +97,15 @@ const generateCoverLetterFlow = ai.defineFlow(
     outputSchema: CoverLetterOutputSchema,
   },
   async input => {
-    const { output } = await coverLetterPrompt(input);
-    return output!;
+    try {
+      const { output } = await coverLetterPrompt(input);
+      return output!;
+    } catch (err) {
+      console.error("Cover letter generation failed, using fallback.", err);
+      return {
+        coverLetter: `// AI model could not be reached. Using a fallback template.\n\n${fallbackCoverLetter}`
+      };
+    }
   }
 );
 
@@ -87,9 +118,10 @@ const generateCoverLetterStreamFlow = ai.defineFlow(
     stream: true,
   },
   async (input) => {
-    const { stream } = await ai.generate({
-        model: googleAI.model('gemini-1.5-flash-latest'),
-        prompt: `You are an expert career coach specializing in writing highly effective cover letters.
+    try {
+        const { stream } = await ai.generate({
+            model: googleAI.model('gemini-1.5-flash-latest'),
+            prompt: `You are an expert career coach specializing in writing highly effective cover letters.
 
 Your task is to create a compelling cover letter based on the provided resume and job description. The primary goal is to highlight the alignment between the candidate's skills and experience (from the resume) and the specific requirements of the job (from the job description).
 
@@ -104,18 +136,29 @@ ${input.jobDescription || 'Not provided.'}
 Tone: ${input.tone}
 
 Generate the cover letter now.`,
-        stream: true,
-    });
+            stream: true,
+        });
+        
+        const readableStream = new ReadableStream({
+          async start(controller) {
+            for await (const chunk of stream) {
+              controller.enqueue(chunk.text);
+            }
+            controller.close();
+          },
+        });
 
-    const readableStream = new ReadableStream({
-      async start(controller) {
-        for await (const chunk of stream) {
-          controller.enqueue(chunk.text);
-        }
-        controller.close();
-      },
-    });
+        return readableStream;
 
-    return readableStream;
+    } catch (err) {
+        console.error("Cover letter streaming failed, using fallback.", err);
+        const fallbackStream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(`// AI model could not be reached. Using a fallback template.\n\n${fallbackCoverLetter}`);
+            controller.close();
+          },
+        });
+        return fallbackStream;
+    }
   }
 );
