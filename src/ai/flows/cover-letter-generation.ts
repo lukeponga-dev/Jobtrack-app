@@ -37,12 +37,27 @@ export async function generateCoverLetter(input: CoverLetterInput): Promise<Cove
   return generateCoverLetterFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'coverLetterPrompt',
-  input: {schema: CoverLetterInputSchema},
-  output: {schema: CoverLetterOutputSchema},
-  model: googleAI.model('gemini-pro'),
-  prompt: `You are an expert career coach specializing in writing highly effective cover letters.
+const generateCoverLetterFlow = ai.defineFlow(
+  {
+    name: 'generateCoverLetterFlow',
+    inputSchema: CoverLetterInputSchema,
+    outputSchema: CoverLetterOutputSchema,
+  },
+  async input => {
+    const models = [
+      googleAI.model('gemini-1.5-flash-latest'),
+      googleAI.model('gemini-pro'),
+    ];
+    let lastError: any = null;
+
+    for (const model of models) {
+      try {
+        const prompt = ai.definePrompt({
+          name: 'coverLetterPrompt',
+          input: {schema: CoverLetterInputSchema},
+          output: {schema: CoverLetterOutputSchema},
+          model: model,
+          prompt: `You are an expert career coach specializing in writing highly effective cover letters.
 
 Your task is to create a compelling cover letter based on the provided resume and job description. The primary goal is to highlight the alignment between the candidate's skills and experience (from the resume) and the specific requirements of the job (from the job description).
 
@@ -57,16 +72,16 @@ Job Description:
 Tone: {{tone}}
 
 Generate the cover letter now.`,
-});
+        });
 
-const generateCoverLetterFlow = ai.defineFlow(
-  {
-    name: 'generateCoverLetterFlow',
-    inputSchema: CoverLetterInputSchema,
-    outputSchema: CoverLetterOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
+        const {output} = await prompt(input);
+        return output!;
+      } catch (err) {
+        console.error(`Error with model ${model.name}:`, err);
+        lastError = err;
+      }
+    }
+
+    throw lastError;
   }
 );

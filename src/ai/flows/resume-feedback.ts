@@ -34,12 +34,27 @@ export async function getResumeFeedback(input: ResumeFeedbackInput): Promise<Res
   return resumeFeedbackFlow(input);
 }
 
-const resumeFeedbackPrompt = ai.definePrompt({
-  name: 'resumeFeedbackPrompt',
-  input: {schema: ResumeFeedbackInputSchema},
-  output: {schema: ResumeFeedbackOutputSchema},
-  model: googleAI.model('gemini-pro'),
-  prompt: `You are an AI resume expert providing feedback on resumes.
+const resumeFeedbackFlow = ai.defineFlow(
+  {
+    name: 'resumeFeedbackFlow',
+    inputSchema: ResumeFeedbackInputSchema,
+    outputSchema: ResumeFeedbackOutputSchema,
+  },
+  async input => {
+    const models = [
+      googleAI.model('gemini-1.5-flash-latest'),
+      googleAI.model('gemini-pro'),
+    ];
+    let lastError: any = null;
+
+    for (const model of models) {
+      try {
+        const resumeFeedbackPrompt = ai.definePrompt({
+          name: 'resumeFeedbackPrompt',
+          input: {schema: ResumeFeedbackInputSchema},
+          output: {schema: ResumeFeedbackOutputSchema},
+          model: model,
+          prompt: `You are an AI resume expert providing feedback on resumes.
 
   Analyze the resume provided and provide the following feedback:
 
@@ -50,16 +65,16 @@ const resumeFeedbackPrompt = ai.definePrompt({
   Here is the resume:
   {{media url=resumeDataUri}}
   `,
-});
+        });
 
-const resumeFeedbackFlow = ai.defineFlow(
-  {
-    name: 'resumeFeedbackFlow',
-    inputSchema: ResumeFeedbackInputSchema,
-    outputSchema: ResumeFeedbackOutputSchema,
-  },
-  async input => {
-    const {output} = await resumeFeedbackPrompt(input);
-    return output!;
+        const {output} = await resumeFeedbackPrompt(input);
+        return output!;
+      } catch (err) {
+        console.error(`Error with model ${model.name}:`, err);
+        lastError = err;
+      }
+    }
+
+    throw lastError;
   }
 );

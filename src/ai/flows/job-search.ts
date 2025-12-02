@@ -39,12 +39,27 @@ export async function searchJobs(input: JobSearchInput): Promise<JobSearchOutput
   return searchJobsFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'jobSearchPrompt',
-  input: {schema: JobSearchInputSchema},
-  output: {schema: JobSearchOutputSchema},
-  model: googleAI.model('gemini-pro'),
-  prompt: `You are a helpful job search assistant. Your task is to generate a list of 10 fictional job postings based on the user's search query.
+const searchJobsFlow = ai.defineFlow(
+  {
+    name: 'searchJobsFlow',
+    inputSchema: JobSearchInputSchema,
+    outputSchema: JobSearchOutputSchema,
+  },
+  async input => {
+    const models = [
+      googleAI.model('gemini-1.5-flash-latest'),
+      googleAI.model('gemini-pro'),
+    ];
+    let lastError: any = null;
+
+    for (const model of models) {
+      try {
+        const prompt = ai.definePrompt({
+          name: 'jobSearchPrompt',
+          input: {schema: JobSearchInputSchema},
+          output: {schema: JobSearchOutputSchema},
+          model: model,
+          prompt: `You are a helpful job search assistant. Your task is to generate a list of 10 fictional job postings based on the user's search query.
 
 For each job posting, you must provide a title, company name, location, a short description (2-3 sentences), and a placeholder URL to a fictional job posting page.
 
@@ -56,16 +71,15 @@ Location: "{{location}}"
 {{/if}}
 
 Generate a list of 10 fictional job postings now.`,
-});
+        });
 
-const searchJobsFlow = ai.defineFlow(
-  {
-    name: 'searchJobsFlow',
-    inputSchema: JobSearchInputSchema,
-    outputSchema: JobSearchOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
+        const {output} = await prompt(input);
+        return output!;
+      } catch (err) {
+        console.error(`Error with model ${model.name}:`, err);
+        lastError = err;
+      }
+    }
+    throw lastError;
   }
 );

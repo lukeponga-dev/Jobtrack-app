@@ -45,12 +45,27 @@ export async function parseApplicationsFromEmail(
   return emailParserFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'emailParserPrompt',
-  input: { schema: EmailParseInputSchema },
-  output: { schema: EmailParseOutputSchema },
-  model: googleAI.model('gemini-pro'),
-  prompt: `You are an expert data extraction agent specializing in job applications. Your task is to parse the following raw email text and extract all job applications into a structured JSON format.
+const emailParserFlow = ai.defineFlow(
+  {
+    name: 'emailParserFlow',
+    inputSchema: EmailParseInputSchema,
+    outputSchema: EmailParseOutputSchema,
+  },
+  async input => {
+    const models = [
+      googleAI.model('gemini-1.5-flash-latest'),
+      googleAI.model('gemini-pro'),
+    ];
+    let lastError: any = null;
+
+    for (const model of models) {
+      try {
+        const prompt = ai.definePrompt({
+          name: 'emailParserPrompt',
+          input: { schema: EmailParseInputSchema },
+          output: { schema: EmailParseOutputSchema },
+          model: model,
+          prompt: `You are an expert data extraction agent specializing in job applications. Your task is to parse the following raw email text and extract all job applications into a structured JSON format.
 
 RULES:
 - Identify each distinct job application mentioned in the text.
@@ -66,16 +81,16 @@ Email Content:
 ---
 
 Extract the application data now.`,
-});
+        });
 
-const emailParserFlow = ai.defineFlow(
-  {
-    name: 'emailParserFlow',
-    inputSchema: EmailParseInputSchema,
-    outputSchema: EmailParseOutputSchema,
-  },
-  async input => {
-    const { output } = await prompt(input);
-    return output!;
+        const { output } = await prompt(input);
+        return output!;
+      } catch (err) {
+        console.error(`Error with model ${model.name}:`, err);
+        lastError = err;
+      }
+    }
+
+    throw lastError;
   }
 );
