@@ -22,6 +22,17 @@ const fileToDataUri = (file: File): Promise<string> => {
   });
 };
 
+const fileToText = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve(reader.result as string);
+        };
+        reader.onerror = reject;
+        reader.readAsText(file);
+    });
+}
+
 export default function ResumeFeedbackClient() {
   const [file, setFile] = React.useState<File | null>(null);
   const [feedback, setFeedback] = React.useState<ResumeFeedbackOutput | null>(
@@ -62,7 +73,17 @@ export default function ResumeFeedbackClient() {
 
     try {
       const resumeDataUri = await fileToDataUri(file);
-      const result = await getResumeFeedback({resumeDataUri});
+      let resumeText: string | undefined;
+      // Extract text for fallback, but don't block on it
+      try {
+        if (file.type === 'text/plain') {
+            resumeText = await fileToText(file);
+        }
+      } catch (textError) {
+        console.warn("Could not extract text from resume for fallback scoring.", textError);
+      }
+      
+      const result = await getResumeFeedback({resumeDataUri, resumeText});
       setFeedback(result);
     } catch (error) {
       console.error('Error getting resume feedback:', error);
@@ -98,7 +119,7 @@ export default function ResumeFeedbackClient() {
               ref={fileInputRef}
               onChange={handleFileChange}
               className="hidden"
-              accept=".pdf,.doc,.docx"
+              accept=".pdf,.doc,.docx,.txt"
             />
             {file && <p className="text-sm font-medium">Selected: {file.name}</p>}
             <Button
@@ -170,7 +191,7 @@ export default function ResumeFeedbackClient() {
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {feedback.keywordOptimizations.map((kw, i) => (
-                    <Badge key={i} variant="secondary">{kw}</Badge>
+                    <Badge key={i} variant={kw === 'AI analysis unavailable' ? 'destructive' : 'secondary'}>{kw}</Badge>
                   ))}
                 </div>
               </CardContent>

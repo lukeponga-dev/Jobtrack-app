@@ -1,4 +1,5 @@
 
+
 import {
   Card,
   CardHeader,
@@ -30,12 +31,12 @@ export function DashboardStats({
     {
       title: 'applied',
       icon: FileClock,
-      color: 'text-primary',
+      color: 'text-blue-500',
     },
     {
       title: 'interview',
       icon: FileCheck,
-      color: 'text-blue-500',
+      color: 'text-yellow-500',
     },
     {
       title: 'rejected',
