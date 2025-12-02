@@ -47,6 +47,7 @@ const prompt = ai.definePrompt({
   name: 'emailParserPrompt',
   input: { schema: EmailParseInputSchema },
   output: { schema: EmailParseOutputSchema },
+  model: 'googleai/gemini-1.5-flash-latest',
   prompt: `You are an expert data extraction agent specializing in job applications. Your task is to parse the following raw email text and extract all job applications into a structured JSON format.
 
 RULES:

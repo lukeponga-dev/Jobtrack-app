@@ -36,6 +36,7 @@ const resumeFeedbackPrompt = ai.definePrompt({
   name: 'resumeFeedbackPrompt',
   input: {schema: ResumeFeedbackInputSchema},
   output: {schema: ResumeFeedbackOutputSchema},
+  model: 'googleai/gemini-1.5-flash-latest',
   prompt: `You are an AI resume expert providing feedback on resumes.
 
   Analyze the resume provided and provide the following feedback:
