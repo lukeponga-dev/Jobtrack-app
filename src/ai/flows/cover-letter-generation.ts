@@ -99,7 +99,7 @@ Resume:
 ${input.resumeText}
 
 Job Description:
-${input.jobDescription}
+${input.jobDescription || 'Not provided.'}
 
 Tone: ${input.tone}
 
