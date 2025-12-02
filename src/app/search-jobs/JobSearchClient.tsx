@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -74,13 +75,37 @@ export default function JobSearchClient() {
     try {
       const result = await searchJobs(values);
       setSearchResults(result.jobs);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error searching for jobs:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Search Failed',
-        description: 'There was an error searching for jobs. Please try again.',
-      });
+      const errorMessage = error.message || '';
+      
+      if (errorMessage.includes('403') && errorMessage.includes('are blocked')) {
+         toast({
+          variant: 'destructive',
+          title: 'AI Service Disabled',
+          description: (
+            <div>
+              <p>The Generative Language API is not enabled for your project.</p>
+              <a
+                href="https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-block text-sm text-white underline"
+              >
+                Click here to enable it
+              </a>
+              , then try again.
+            </div>
+          ),
+          duration: 10000,
+         });
+      } else {
+         toast({
+          variant: 'destructive',
+          title: 'Search Failed',
+          description: 'There was an error searching for jobs. Please try again.',
+        });
+      }
     } finally {
       setIsLoading(false);
     }
