@@ -45,7 +45,7 @@ const resumeFeedbackFlow = ai.defineFlow(
       name: 'resumeFeedbackPrompt',
       input: {schema: ResumeFeedbackInputSchema},
       output: {schema: ResumeFeedbackOutputSchema},
-      model: googleAI.model('gemini-1.0-pro'),
+      model: googleAI.model('gemini-1.5-flash-latest'),
       prompt: `You are an AI resume expert providing feedback on resumes.
 
   Analyze the resume provided and provide the following feedback:
