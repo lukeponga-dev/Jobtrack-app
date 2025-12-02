@@ -10,7 +10,7 @@
 
 import {ai} from '../genkit';
 import {z} from 'genkit';
-import {googleAI} from '@genkit-ai/google-genai';
+import {googleAI} from '@genkit-ai/googleai';
 
 const ResumeFeedbackInputSchema = z.object({
   resumeDataUri: z
@@ -41,20 +41,12 @@ const resumeFeedbackFlow = ai.defineFlow(
     outputSchema: ResumeFeedbackOutputSchema,
   },
   async input => {
-    const models = [
-      googleAI.model('gemini-1.5-flash-latest'),
-      googleAI.model('gemini-pro'),
-    ];
-    let lastError: any = null;
-
-    for (const model of models) {
-      try {
-        const resumeFeedbackPrompt = ai.definePrompt({
-          name: 'resumeFeedbackPrompt',
-          input: {schema: ResumeFeedbackInputSchema},
-          output: {schema: ResumeFeedbackOutputSchema},
-          model: model,
-          prompt: `You are an AI resume expert providing feedback on resumes.
+    const resumeFeedbackPrompt = ai.definePrompt({
+      name: 'resumeFeedbackPrompt',
+      input: {schema: ResumeFeedbackInputSchema},
+      output: {schema: ResumeFeedbackOutputSchema},
+      model: googleAI.model('gemini-pro'),
+      prompt: `You are an AI resume expert providing feedback on resumes.
 
   Analyze the resume provided and provide the following feedback:
 
@@ -65,16 +57,9 @@ const resumeFeedbackFlow = ai.defineFlow(
   Here is the resume:
   {{media url=resumeDataUri}}
   `,
-        });
+    });
 
-        const {output} = await resumeFeedbackPrompt(input);
-        return output!;
-      } catch (err) {
-        console.error(`Error with model ${model.name}:`, err);
-        lastError = err;
-      }
-    }
-
-    throw lastError;
+    const {output} = await resumeFeedbackPrompt(input);
+    return output!;
   }
 );
