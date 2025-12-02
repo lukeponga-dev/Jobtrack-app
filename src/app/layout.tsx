@@ -3,6 +3,7 @@ import './globals.css';
 import {Toaster} from '../components/ui/toaster';
 import { FirebaseClientProvider } from '../firebase';
 import { ThemeProvider } from '../components/ThemeProvider';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata: Metadata = {
   title: 'JobTrack: Track your job applications',
@@ -40,6 +41,7 @@ export default function RootLayout({
           </FirebaseClientProvider>
           <Toaster />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
