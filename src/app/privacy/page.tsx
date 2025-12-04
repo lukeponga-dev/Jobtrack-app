@@ -108,7 +108,7 @@ export default function PrivacyPolicyPage() {
             <h2>9. Contact Us</h2>
             <p>
               If you have any questions about this Privacy Policy, please contact
-              us at privacy@jobtrack.app.
+              us at developmentdesignsltd@gmail.com.
             </p>
 
             <p>

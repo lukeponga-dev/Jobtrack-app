@@ -118,7 +118,7 @@ export default function TermsOfServicePage() {
             <h2>11. Contact Us</h2>
             <p>
               If you have any questions about these Terms, please contact us at
-              terms@jobtrack.app.
+              developmentdesignsltd@gmail.com.
             </p>
 
             <p>
