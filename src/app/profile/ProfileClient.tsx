@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { Skeleton } from '../../components/ui/skeleton';
 import { UpdateProfileForm } from '../../components/profile/UpdateProfileForm';
 import { ChangePasswordForm } from '../../components/profile/ChangePasswordForm';
+import { DeleteAccountCard } from '@/components/profile/DeleteAccountCard';
 
 export default function ProfileClient() {
   const { user, isUserLoading } = useFirebase();
@@ -56,6 +57,7 @@ export default function ProfileClient() {
     <div className="max-w-2xl space-y-6">
       <UpdateProfileForm />
       {isPasswordProvider && <ChangePasswordForm />}
+      <DeleteAccountCard />
     </div>
   );
 }
