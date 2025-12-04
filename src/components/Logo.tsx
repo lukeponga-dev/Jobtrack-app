@@ -2,7 +2,7 @@
 export function Logo() {
   return (
     <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-      <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
+      <div className="bg-primary text-primary-foreground p-1.5 rounded-lg bg-gradient-to-br from-primary via-primary to-primary/80">
         <svg
           width="20"
           height="20"
