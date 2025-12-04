@@ -24,4 +24,5 @@ export type Application = {
   notes?: string;
   attachments?: Attachment[];
   userId: string;
+  jobDescription?: string;
 };

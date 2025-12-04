@@ -3,7 +3,6 @@ config();
 
 import { genkit } from 'genkit';
 import { googleAI } from '@genkit-ai/google-genai';
-import { nextDev } from '@genkit-ai/next';
 
 // Import flows so they are registered with the dev server
 import './flows/cover-letter-generation';
@@ -14,7 +13,5 @@ import './flows/email-parser';
 export default genkit({
     plugins: [
         googleAI(),
-        nextDev()
     ],
-    enableTracingAndMetrics: true,
 });

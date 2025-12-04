@@ -13,6 +13,7 @@
 import {ai} from '../genkit';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/google-genai';
+import {StreamingFlow} from '@genkit-ai/core/lib/streaming';
 
 const CoverLetterInputSchema = z.object({
   resumeText: z
@@ -98,8 +99,8 @@ const generateCoverLetterFlow = ai.defineFlow(
   },
   async input => {
     try {
-      const { output } = await coverLetterPrompt(input);
-      return output!;
+      const result = await coverLetterPrompt(input);
+      return result.output!;
     } catch (err) {
       console.error("Cover letter generation failed, using fallback.", err);
       return {
@@ -110,55 +111,32 @@ const generateCoverLetterFlow = ai.defineFlow(
 );
 
 
-const generateCoverLetterStreamFlow = ai.defineFlow(
-  {
-    name: 'generateCoverLetterStreamFlow',
-    inputSchema: CoverLetterInputSchema,
-    outputSchema: z.string(),
-    stream: true,
-  },
-  async (input) => {
-    try {
-        const { stream } = await ai.generate({
-            model: googleAI.model('gemini-1.5-flash-latest'),
-            prompt: `You are an expert career coach specializing in writing highly effective cover letters.
+async function generateCoverLetterStreamFlow(input: CoverLetterInput) {
+  try {
+    const streamingResponse = await ai.run(coverLetterPrompt, {
+      input,
+      stream: true,
+    });
 
-Your task is to create a compelling cover letter based on the provided resume and job description. The primary goal is to highlight the alignment between the candidate's skills and experience (from the resume) and the specific requirements of the job (from the job description).
+    const readableStream = new ReadableStream({
+      async start(controller) {
+        for await (const chunk of (streamingResponse as any).stream()) {
+          controller.enqueue(chunk.output?.coverLetter);
+        }
+        controller.close();
+      },
+    });
 
-Analyze both documents and write a cover letter in the specified tone. Be sure to weave in specific examples from the resume that demonstrate the candidate's qualifications for the role.
+    return readableStream;
 
-Resume:
-${input.resumeText}
-
-Job Description:
-${input.jobDescription || 'Not provided.'}
-
-Tone: ${input.tone}
-
-Generate the cover letter now.`,
-            stream: true,
-        });
-        
-        const readableStream = new ReadableStream({
-          async start(controller) {
-            for await (const chunk of stream) {
-              controller.enqueue(chunk.text);
-            }
-            controller.close();
-          },
-        });
-
-        return readableStream;
-
-    } catch (err) {
-        console.error("Cover letter streaming failed, using fallback.", err);
-        const fallbackStream = new ReadableStream({
-          start(controller) {
-            controller.enqueue(`// AI model could not be reached. Using a fallback template.\n\n${fallbackCoverLetter}`);
-            controller.close();
-          },
-        });
-        return fallbackStream;
-    }
+  } catch (err) {
+    console.error("Cover letter streaming failed, using fallback.", err);
+    const fallbackStream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(`// AI model could not be reached. Using a fallback template.\n\n${fallbackCoverLetter}`);
+        controller.close();
+      },
+    });
+    return fallbackStream;
   }
-);
+}

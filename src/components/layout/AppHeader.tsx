@@ -45,8 +45,10 @@ export default function AppHeader() {
   const [isInstallDialogOpen, setIsInstallDialogOpen] = React.useState(false);
 
   const handleLogout = async () => {
-    await signOut(auth);
-    router.push('/');
+    if (auth) {
+      await signOut(auth);
+      router.push('/');
+    }
   };
 
   const userAvatar = user?.photoURL;

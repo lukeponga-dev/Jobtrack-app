@@ -1,5 +1,4 @@
 
-
 import {
   Card,
   CardHeader,
@@ -9,7 +8,6 @@ import {
 import {Briefcase, FileCheck, FileClock, Trophy, XCircle} from 'lucide-react';
 import type {Application, ApplicationStatus} from '../../lib/types';
 import { Progress } from '../ui/progress';
-import { Button } from '../ui/button';
 
 export function DashboardStats({
     applications,
@@ -47,8 +45,7 @@ export function DashboardStats({
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Button variant="ghost" className="h-full p-0" onClick={() => onStatClick('all')}>
-            <Card className="w-full hover:bg-muted/50 transition-colors">
+        <Card className="w-full hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => onStatClick('all')}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
                 <Briefcase className="h-4 w-4 text-muted-foreground" />
@@ -56,10 +53,8 @@ export function DashboardStats({
             <CardContent>
                 <div className="text-2xl font-bold">{totalApplications}</div>
             </CardContent>
-            </Card>
-        </Button>
-        <Button variant="ghost" className="h-full p-0" onClick={() => onStatClick('offer')}>
-            <Card className="w-full hover:bg-muted/50 transition-colors">
+        </Card>
+        <Card className="w-full hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => onStatClick('offer')}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Offers</CardTitle>
                 <div className="rounded-lg bg-accent p-2">
@@ -69,8 +64,7 @@ export function DashboardStats({
             <CardContent>
                 <div className="text-2xl font-bold">{offerCount}</div>
             </CardContent>
-            </Card>
-        </Button>
+        </Card>
         <Card className="lg:col-span-1">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
@@ -81,8 +75,7 @@ export function DashboardStats({
           </CardContent>
         </Card>
       {statItems.map(item => (
-        <Button key={item.title} variant="ghost" className="h-full p-0" onClick={() => onStatClick(item.title)}>
-            <Card className="w-full hover:bg-muted/50 transition-colors">
+        <Card key={item.title} className="w-full hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => onStatClick(item.title)}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium capitalize">{item.title}</CardTitle>
                 <item.icon className={`h-4 w-4 ${item.color}`} />
@@ -90,8 +83,7 @@ export function DashboardStats({
             <CardContent>
                 <div className="text-2xl font-bold">{getCount(item.title)}</div>
             </CardContent>
-            </Card>
-        </Button>
+        </Card>
       ))}
     </div>
   );

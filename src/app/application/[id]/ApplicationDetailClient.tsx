@@ -20,6 +20,7 @@ import {
   FileText,
   Paperclip,
   ArrowLeft,
+  CheckCircle,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '../../../components/ui/button';
@@ -112,6 +113,20 @@ export default function ApplicationDetailClient({
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <main className="col-span-1 space-y-6 md:col-span-2">
+          {application.jobDescription && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText /> Job Description
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
+                  {application.jobDescription}
+                </div>
+              </CardContent>
+            </Card>
+          )}
           {application.notes && (
             <Card>
               <CardHeader>

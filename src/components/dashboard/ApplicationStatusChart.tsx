@@ -78,7 +78,8 @@ export function ApplicationStatusChart({ applications }: { applications: Applica
                 type="category"
                 tickLine={false}
                 axisLine={false}
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12, textTransform: 'capitalize' }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                tickFormatter={(value) => value.charAt(0).toUpperCase() + value.slice(1)}
                 />
               <Tooltip cursor={{fill: 'hsl(var(--muted))'}} content={<ChartTooltipContent />} />
               <Bar dataKey="count" radius={4} />
