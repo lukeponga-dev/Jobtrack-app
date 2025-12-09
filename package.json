@@ -46,7 +46,7 @@
     "fix": "^0.0.6",
     "genkit": "^1.24.0",
     "lucide-react": "^0.475.0",
-    "next": "15.3.3",
+    "next": "15.3.6",
     "next-themes": "^0.3.0",
     "papaparse": "^5.4.1",
     "patch-package": "^8.0.0",
