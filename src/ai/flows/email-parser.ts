@@ -45,19 +45,12 @@ export async function parseApplicationsFromEmail(
   return emailParserFlow(input);
 }
 
-const emailParserFlow = ai.defineFlow(
-  {
-    name: 'emailParserFlow',
-    inputSchema: EmailParseInputSchema,
-    outputSchema: EmailParseOutputSchema,
-  },
-  async input => {
-    const prompt = ai.definePrompt({
-      name: 'emailParserPrompt',
-      input: { schema: EmailParseInputSchema },
-      output: { schema: EmailParseOutputSchema },
-      model: googleAI.model('gemini-1.5-flash-latest'),
-      prompt: `You are an expert data extraction agent specializing in job applications. Your task is to parse the following raw email text and extract all job applications into a structured JSON format.
+const emailParserPrompt = ai.definePrompt({
+  name: 'emailParserPrompt',
+  input: { schema: EmailParseInputSchema },
+  output: { schema: EmailParseOutputSchema },
+  model: googleAI.model('gemini-1.5-flash-latest'),
+  prompt: `You are an expert data extraction agent specializing in job applications. Your task is to parse the following raw email text and extract all job applications into a structured JSON format.
 
 RULES:
 - Identify each distinct job application mentioned in the text.
@@ -73,10 +66,17 @@ Email Content:
 ---
 
 Extract the application data now.`,
-    });
+});
 
+const emailParserFlow = ai.defineFlow(
+  {
+    name: 'emailParserFlow',
+    inputSchema: EmailParseInputSchema,
+    outputSchema: EmailParseOutputSchema,
+  },
+  async input => {
     try {
-      const { output } = await prompt(input);
+      const { output } = await emailParserPrompt(input);
       return output!;
     } catch (err) {
       console.error("Email parsing failed, using fallback.", err);

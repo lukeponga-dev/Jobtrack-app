@@ -66,19 +66,12 @@ export async function getResumeFeedback(input: ResumeFeedbackInput): Promise<Res
   return resumeFeedbackFlow(input);
 }
 
-const resumeFeedbackFlow = ai.defineFlow(
-  {
-    name: 'resumeFeedbackFlow',
-    inputSchema: ResumeFeedbackInputSchema,
-    outputSchema: ResumeFeedbackOutputSchema,
-  },
-  async input => {
-    const resumeFeedbackPrompt = ai.definePrompt({
-      name: 'resumeFeedbackPrompt',
-      input: {schema: ResumeFeedbackInputSchema},
-      output: {schema: ResumeFeedbackOutputSchema},
-      model: googleAI.model('gemini-1.5-flash-latest'),
-      prompt: `You are an AI resume expert providing feedback on resumes.
+const resumeFeedbackPrompt = ai.definePrompt({
+  name: 'resumeFeedbackPrompt',
+  input: {schema: ResumeFeedbackInputSchema},
+  output: {schema: ResumeFeedbackOutputSchema},
+  model: googleAI.model('gemini-1.5-flash-latest'),
+  prompt: `You are an AI resume expert providing feedback on resumes.
 
   Analyze the resume provided and provide the following feedback:
 
@@ -89,8 +82,15 @@ const resumeFeedbackFlow = ai.defineFlow(
   Here is the resume:
   {{media url=resumeDataUri}}
   `,
-    });
-    
+});
+
+const resumeFeedbackFlow = ai.defineFlow(
+  {
+    name: 'resumeFeedbackFlow',
+    inputSchema: ResumeFeedbackInputSchema,
+    outputSchema: ResumeFeedbackOutputSchema,
+  },
+  async input => {
     try {
       console.info("Calling Gemini for resume feedback...");
       const {output} = await resumeFeedbackPrompt(input);

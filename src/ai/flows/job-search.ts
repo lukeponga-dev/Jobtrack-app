@@ -39,19 +39,12 @@ export async function searchJobs(input: JobSearchInput): Promise<JobSearchOutput
   return searchJobsFlow(input);
 }
 
-const searchJobsFlow = ai.defineFlow(
-  {
-    name: 'searchJobsFlow',
-    inputSchema: JobSearchInputSchema,
-    outputSchema: JobSearchOutputSchema,
-  },
-  async input => {
-    const prompt = ai.definePrompt({
-      name: 'jobSearchPrompt',
-      input: {schema: JobSearchInputSchema},
-      output: {schema: JobSearchOutputSchema},
-      model: googleAI.model('gemini-1.5-flash-latest'),
-      prompt: `You are a helpful job search assistant. Your task is to generate a list of 10 fictional job postings based on the user's search query.
+const jobSearchPrompt = ai.definePrompt({
+  name: 'jobSearchPrompt',
+  input: {schema: JobSearchInputSchema},
+  output: {schema: JobSearchOutputSchema},
+  model: googleAI.model('gemini-1.5-flash-latest'),
+  prompt: `You are a helpful job search assistant. Your task is to generate a list of 10 fictional job postings based on the user's search query.
 
 For each job posting, you must provide a title, company name, location, a short description (2-3 sentences), and a placeholder URL to a fictional job posting page.
 
@@ -63,10 +56,17 @@ Location: "{{location}}"
 {{/if}}
 
 Generate a list of 10 fictional job postings now.`,
-    });
-    
+});
+
+const searchJobsFlow = ai.defineFlow(
+  {
+    name: 'searchJobsFlow',
+    inputSchema: JobSearchInputSchema,
+    outputSchema: JobSearchOutputSchema,
+  },
+  async input => {
     try {
-        const {output} = await prompt(input);
+        const {output} = await jobSearchPrompt(input);
         return output!;
     } catch (err) {
         console.error("Job search failed, re-throwing error for client.", err);
