@@ -17,6 +17,14 @@ import { useToast } from '../../hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+declare global {
+    interface Window {
+        grecaptcha: any;
+    }
+}
+
+const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
+
 const GoogleIcon = () => (
   <svg role="img" viewBox="0 0 24 24" className="mr-2 h-4 w-4">
     <path
@@ -42,11 +50,44 @@ export function UserAuthForm() {
   const { toast } = useToast();
   const router = useRouter();
 
+  const executeRecaptcha = async (action: string): Promise<string | null> => {
+    if (!window.grecaptcha) {
+      toast({
+        variant: 'destructive',
+        title: 'reCAPTCHA not loaded',
+        description: 'Please check your connection and try again.',
+      });
+      return null;
+    }
+
+    try {
+      await window.grecaptcha.enterprise.ready();
+      const token = await window.grecaptcha.enterprise.execute(siteKey, { action });
+      console.log('reCAPTCHA token:', token); // For now, we log the token
+      return token;
+    } catch (error) {
+      console.error('reCAPTCHA execution error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'reCAPTCHA Error',
+        description: 'Could not verify you are human. Please try again.',
+      });
+      return null;
+    }
+  };
+
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     if (!auth) return;
 
     setIsLoading(true);
+
+    const token = await executeRecaptcha(isSigningUp ? 'SIGNUP' : 'LOGIN');
+    if (!token) {
+        setIsLoading(false);
+        return;
+    }
+
     const form = event.target as HTMLFormElement;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
     const password = (form.elements.namedItem('password') as HTMLInputElement).value;
@@ -72,6 +113,13 @@ export function UserAuthForm() {
   const handleGoogleSignIn = async () => {
     if (!auth) return;
     setIsLoading(true);
+
+    const token = await executeRecaptcha('LOGIN_GOOGLE');
+    if (!token) {
+        setIsLoading(false);
+        return;
+    }
+
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
@@ -90,6 +138,13 @@ export function UserAuthForm() {
   const handleGithubSignIn = async () => {
     if (!auth) return;
     setIsLoading(true);
+
+    const token = await executeRecaptcha('LOGIN_GITHUB');
+    if (!token) {
+        setIsLoading(false);
+        return;
+    }
+
     try {
       const provider = new GithubAuthProvider();
       await signInWithPopup(auth, provider);
@@ -134,7 +189,7 @@ export function UserAuthForm() {
             <Label htmlFor="password">Password</Label>
             <Input id="password" name="password" type="password" disabled={isLoading} />
           </div>
-          <Button disabled={isLoading}>
+          <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isSigningUp ? 'Sign Up with Email' : 'Sign In with Email'}
           </Button>
