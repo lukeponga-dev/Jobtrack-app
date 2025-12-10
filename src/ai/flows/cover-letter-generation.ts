@@ -93,7 +93,7 @@ const generateCoverLetterFlow = ai.defineFlow(
   },
   async input => {
     try {
-      const result = await coverLetterPrompt.generate({input});
+      const result = await ai.generate({prompt: coverLetterPrompt as any, input});
       return result.output()!;
     } catch (err) {
       console.error("Cover letter generation failed, using fallback.", err);
@@ -114,7 +114,7 @@ export const streamCoverLetter = ai.defineFlow(
     let response = '';
     try {
         console.log('Calling cover letter prompt for streaming...');
-        const streamingResponse = await coverLetterPrompt.generate({input, stream: true});
+        const streamingResponse = await ai.generate({prompt: coverLetterPrompt as any, input, stream: true});
         for await (const chunk of streamingResponse.stream()) {
             const output = chunk.output();
             if (output?.coverLetter) {
