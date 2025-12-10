@@ -13,7 +13,6 @@
 import {ai} from '../genkit';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/google-genai';
-import {StreamingFlow} from '@genkit-ai/core/lib/streaming';
 
 const CoverLetterInputSchema = z.object({
   resumeText: z
@@ -86,11 +85,6 @@ export async function generateCoverLetter(input: CoverLetterInput): Promise<Cove
   return generateCoverLetterFlow(input);
 }
 
-export async function streamCoverLetter(input: CoverLetterInput) {
-    return generateCoverLetterStreamFlow(input);
-}
-
-
 const generateCoverLetterFlow = ai.defineFlow(
   {
     name: 'generateCoverLetterFlow',
@@ -110,33 +104,31 @@ const generateCoverLetterFlow = ai.defineFlow(
   }
 );
 
-
-async function generateCoverLetterStreamFlow(input: CoverLetterInput) {
-  try {
-    const streamingResponse = await ai.run(coverLetterPrompt, {
-      input,
-      stream: true,
-    });
-
-    const readableStream = new ReadableStream({
-      async start(controller) {
-        for await (const chunk of (streamingResponse as any).stream()) {
-          controller.enqueue(chunk.output?.coverLetter);
+export const streamCoverLetter = ai.defineFlow(
+  {
+    name: 'streamCoverLetter',
+    inputSchema: CoverLetterInputSchema,
+    outputSchema: z.string(),
+    stream: true,
+  },
+  async (input, stream) => {
+    (async () => {
+        try {
+            console.log('Calling cover letter prompt for streaming...');
+            const streamingResponse = await coverLetterPrompt(input, { stream: true });
+            for await (const chunk of streamingResponse.stream()) {
+                if (chunk.output?.coverLetter) {
+                    stream.chunk(chunk.output.coverLetter);
+                }
+            }
+        } catch (err) {
+            console.error("Cover letter streaming failed, using fallback.", err);
+            stream.chunk(`// AI model could not be reached. Using a fallback template.\n\n${fallbackCoverLetter}`);
+        } finally {
+            stream.end();
         }
-        controller.close();
-      },
-    });
+    })();
 
-    return readableStream;
-
-  } catch (err) {
-    console.error("Cover letter streaming failed, using fallback.", err);
-    const fallbackStream = new ReadableStream({
-      start(controller) {
-        controller.enqueue(`// AI model could not be reached. Using a fallback template.\n\n${fallbackCoverLetter}`);
-        controller.close();
-      },
-    });
-    return fallbackStream;
+    return stream;
   }
-}
+);
