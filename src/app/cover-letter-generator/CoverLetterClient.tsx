@@ -55,7 +55,7 @@ export default function CoverLetterClient() {
         setGeneratedLetter(stream);
         return;
       }
-      const reader = stream.getReader();
+      const reader = (stream as ReadableStream).getReader();
       const decoder = new TextDecoder();
 
       while (true) {

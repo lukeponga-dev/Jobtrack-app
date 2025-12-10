@@ -93,8 +93,8 @@ const generateCoverLetterFlow = ai.defineFlow(
   },
   async input => {
     try {
-      const result = await coverLetterPrompt(input);
-      return result.output!;
+      const result = await coverLetterPrompt.generate({input});
+      return result.output()!;
     } catch (err) {
       console.error("Cover letter generation failed, using fallback.", err);
       return {
@@ -109,26 +109,24 @@ export const streamCoverLetter = ai.defineFlow(
     name: 'streamCoverLetter',
     inputSchema: CoverLetterInputSchema,
     outputSchema: z.string(),
-    stream: true,
   },
-  async (input, stream) => {
-    (async () => {
-        try {
-            console.log('Calling cover letter prompt for streaming...');
-            const streamingResponse = await coverLetterPrompt(input, { stream: true });
-            for await (const chunk of streamingResponse.stream()) {
-                if (chunk.output?.coverLetter) {
-                    stream.chunk(chunk.output.coverLetter);
-                }
+  async (input, streamingCallback) => {
+    let response = '';
+    try {
+        console.log('Calling cover letter prompt for streaming...');
+        const streamingResponse = await coverLetterPrompt.generate({input, stream: true});
+        for await (const chunk of streamingResponse.stream()) {
+            const output = chunk.output();
+            if (output?.coverLetter) {
+                response += output.coverLetter;
+                if (streamingCallback) streamingCallback(output.coverLetter);
             }
-        } catch (err) {
-            console.error("Cover letter streaming failed, using fallback.", err);
-            stream.chunk(`// AI model could not be reached. Using a fallback template.\n\n${fallbackCoverLetter}`);
-        } finally {
-            stream.end();
         }
-    })();
-
-    return stream;
+    } catch (err) {
+        console.error("Cover letter streaming failed, using fallback.", err);
+        response = `// AI model could not be reached. Using a fallback template.\n\n${fallbackCoverLetter}`;
+        if (streamingCallback) streamingCallback(response);
+    }
+    return response;
   }
 );
