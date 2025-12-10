@@ -17,7 +17,7 @@ const RecaptchaOutputSchema = z.object({
 export type RecaptchaOutput = z.infer<typeof RecaptchaOutputSchema>;
 
 const projectID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+const recaptchaKey = "6LcdwScsAAAAAOp-nSEU4N0flr--QiI26cOwPIFX";
 
 export async function verifyRecaptcha(
   input: RecaptchaInput

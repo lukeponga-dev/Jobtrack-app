@@ -24,7 +24,7 @@ declare global {
   }
 }
 
-const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
+const siteKey = "6LcdwScsAAAAAOp-nSEU4N0flr--QiI26cOwPIFX";
 
 const GoogleIcon = () => (
   <svg role="img" viewBox="0 0 24 24" className="mr-2 h-4 w-4">
