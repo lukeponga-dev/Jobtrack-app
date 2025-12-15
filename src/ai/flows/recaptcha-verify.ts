@@ -12,6 +12,8 @@ import { RecaptchaEnterpriseServiceClient } from '@google-cloud/recaptcha-enterp
 const RecaptchaInputSchema = z.object({
   token: z.string().describe('The reCAPTCHA token generated on the client.'),
   expectedAction: z.string().describe('The action name associated with the token (e.g., LOGIN).'),
+  email: z.string().optional().describe('The email of the user if available.'),
+  accountId: z.string().optional().describe('The stable account ID of the user if available.'),
 });
 
 const RecaptchaOutputSchema = z.object({
@@ -31,7 +33,7 @@ const recaptchaFlow = ai.defineFlow(
     inputSchema: RecaptchaInputSchema,
     outputSchema: RecaptchaOutputSchema,
   },
-  async ({ token, expectedAction }) => {
+  async ({ token, expectedAction, accountId, email }) => {
     const projectID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
     const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
@@ -43,12 +45,22 @@ const recaptchaFlow = ai.defineFlow(
     const client = new RecaptchaEnterpriseServiceClient();
     const projectPath = client.projectPath(projectID);
 
+    const event: any = {
+        token: token,
+        siteKey: recaptchaKey,
+        expectedAction: expectedAction,
+    };
+    
+    if (accountId || email) {
+        event.userInfo = {
+            accountId: accountId,
+            userIds: email ? [{ email }] : undefined,
+        };
+    }
+
     const request = {
       assessment: {
-        event: {
-          token: token,
-          siteKey: recaptchaKey,
-        },
+        event: event,
       },
       parent: projectPath,
     };

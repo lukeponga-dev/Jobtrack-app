@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
-import { useAuth } from '../../firebase';
+import { useFirebase } from '../../firebase';
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -26,14 +26,14 @@ declare global {
 
 const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string;
 
-async function executeRecaptcha(action: string): Promise<string> {
+function executeRecaptcha(action: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    if (!window.grecaptcha) {
-      reject(new Error("reCAPTCHA script not loaded"));
-      return;
+    if (!window.grecaptcha || !window.grecaptcha.enterprise) {
+      return reject(new Error('reCAPTCHA script not loaded'));
     }
     window.grecaptcha.enterprise.ready(() => {
-      window.grecaptcha.enterprise.execute(siteKey, { action })
+      window.grecaptcha.enterprise
+        .execute(siteKey, { action })
         .then(resolve)
         .catch(reject);
     });
@@ -61,11 +61,11 @@ const GithubIcon = () => (
 export function UserAuthForm() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isSigningUp, setIsSigningUp] = React.useState(false);
-  const auth = useAuth();
+  const {auth, user} = useFirebase();
   const { toast } = useToast();
   const router = useRouter();
 
-  const handleAuthAction = async (authFunction: () => Promise<any>) => {
+  const handleAuthAction = async (authFunction: () => Promise<any>, email?: string) => {
     if (!auth) return;
     setIsLoading(true);
     try {
@@ -75,6 +75,8 @@ export function UserAuthForm() {
       const { valid } = await recaptchaVerifyFlow({
         token: recaptchaToken,
         expectedAction: action,
+        email: email,
+        accountId: user?.uid
       });
 
       if (!valid) {
@@ -107,7 +109,7 @@ export function UserAuthForm() {
       } else {
         await signInWithEmailAndPassword(auth!, email, password);
       }
-    });
+    }, email);
   }
 
   const handleGoogleSignIn = async () => {
