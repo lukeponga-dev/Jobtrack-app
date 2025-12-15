@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -16,29 +17,6 @@ import {
 import { useToast } from '../../hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { recaptchaVerifyFlow } from '@/ai/flows/recaptcha-verify';
-
-declare global {
-  interface Window {
-    grecaptcha: any;
-  }
-}
-
-const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string;
-
-function executeRecaptcha(action: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    if (!window.grecaptcha || !window.grecaptcha.enterprise) {
-      return reject(new Error('reCAPTCHA script not loaded'));
-    }
-    window.grecaptcha.enterprise.ready(() => {
-      window.grecaptcha.enterprise
-        .execute(siteKey, { action })
-        .then(resolve)
-        .catch(reject);
-    });
-  });
-}
 
 const GoogleIcon = () => (
   <svg role="img" viewBox="0 0 24 24" className="mr-2 h-4 w-4">
@@ -61,31 +39,16 @@ const GithubIcon = () => (
 export function UserAuthForm() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isSigningUp, setIsSigningUp] = React.useState(false);
-  const {auth, user} = useFirebase();
+  const {auth} = useFirebase();
   const { toast } = useToast();
   const router = useRouter();
 
-  const handleAuthAction = async (authFunction: () => Promise<any>, email?: string) => {
+  const handleAuthAction = async (authFunction: () => Promise<any>) => {
     if (!auth) return;
     setIsLoading(true);
     try {
-      const action = isSigningUp ? 'SIGNUP' : 'LOGIN';
-      const recaptchaToken = await executeRecaptcha(action);
-
-      const { valid } = await recaptchaVerifyFlow({
-        token: recaptchaToken,
-        expectedAction: action,
-        email: email,
-        accountId: user?.uid
-      });
-
-      if (!valid) {
-        throw new Error('reCAPTCHA verification failed. Please try again.');
-      }
-      
       await authFunction();
       router.push('/dashboard');
-
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -109,7 +72,7 @@ export function UserAuthForm() {
       } else {
         await signInWithEmailAndPassword(auth!, email, password);
       }
-    }, email);
+    });
   }
 
   const handleGoogleSignIn = async () => {
