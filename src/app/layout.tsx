@@ -28,7 +28,7 @@ export default function RootLayout({
           'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
           })(window,document,'script','dataLayer','GTM-PMJPBTJ7');`}
         </Script>
-        <Script src={`https://www.google.com/recaptcha/enterprise.js?render=6LcdwScsAAAAAOp-nSEU4N0flr--QiI26cOwPIFX`} async defer></Script>
+        <script src="https://www.gstatic.com/recaptcha/api2/v2/recaptcha.js?hl=en" async defer></script>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

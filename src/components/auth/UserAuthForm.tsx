@@ -16,15 +16,8 @@ import {
 import { useToast } from '../../hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { verifyRecaptcha } from '@/ai/flows/recaptcha-verify';
 
-declare global {
-  interface Window {
-    grecaptcha: any;
-  }
-}
-
-const siteKey = "6LcdwScsAAAAAOp-nSEU4N0flr--QiI26cOwPIFX";
+const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!;
 
 const GoogleIcon = () => (
   <svg role="img" viewBox="0 0 24 24" className="mr-2 h-4 w-4">
@@ -51,66 +44,25 @@ export function UserAuthForm() {
   const { toast } = useToast();
   const router = useRouter();
 
-  const executeRecaptcha = (action: string): Promise<string | null> => {
-    return new Promise((resolve) => {
-      if (!window.grecaptcha || !siteKey) {
-        toast({
-          variant: 'destructive',
-          title: 'reCAPTCHA not loaded',
-          description:
-            'Please check your connection or ad-blocker and try again.',
-        });
-        resolve(null);
-        return;
+  React.useEffect(() => {
+    (window as any).onsubmit = (token: string) => {
+      console.log('reCAPTCHA token:', token);
+      // Here you would typically send the token to your backend for verification
+      // and then proceed with the form submission.
+      const form = document.getElementById('auth-form') as HTMLFormElement;
+      if (form) {
+        // Manually trigger the form's onSubmit handler
+         const event = new Event('submit', { bubbles: true, cancelable: true });
+         form.dispatchEvent(event);
       }
-
-      try {
-        window.grecaptcha.enterprise.ready(async () => {
-          try {
-            const token = await window.grecaptcha.enterprise.execute(siteKey, {
-              action,
-            });
-            const result = await verifyRecaptcha({
-              token,
-              recaptchaAction: action,
-            });
-            if (!result.isValid) {
-              throw new Error('reCAPTCHA verification failed.');
-            }
-            resolve(token);
-          } catch (error) {
-            console.error('reCAPTCHA execution error:', error);
-            toast({
-              variant: 'destructive',
-              title: 'reCAPTCHA Error',
-              description: 'Could not verify you are human. Please try again.',
-            });
-            resolve(null);
-          }
-        });
-      } catch (error) {
-        console.error('reCAPTCHA ready error:', error);
-        toast({
-          variant: 'destructive',
-          title: 'reCAPTCHA Error',
-          description: 'Could not initialize reCAPTCHA. Please try again.',
-        });
-        resolve(null);
-      }
-    });
-  };
+    };
+  }, []);
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     if (!auth) return;
 
     setIsLoading(true);
-
-    const token = await executeRecaptcha(isSigningUp ? 'SIGNUP' : 'LOGIN');
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
 
     const form = event.target as HTMLFormElement;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
@@ -138,13 +90,6 @@ export function UserAuthForm() {
   const handleGoogleSignIn = async () => {
     if (!auth) return;
     setIsLoading(true);
-
-    const token = await executeRecaptcha('LOGIN_GOOGLE');
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
-
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
@@ -163,13 +108,6 @@ export function UserAuthForm() {
   const handleGithubSignIn = async () => {
     if (!auth) return;
     setIsLoading(true);
-
-    const token = await executeRecaptcha('LOGIN_GITHUB');
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
-
     try {
       const provider = new GithubAuthProvider();
       await signInWithPopup(auth, provider);
@@ -195,7 +133,7 @@ export function UserAuthForm() {
 
   return (
     <div className="grid gap-6">
-      <form onSubmit={onSubmit}>
+      <form id="auth-form" onSubmit={onSubmit}>
         <div className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
@@ -219,7 +157,13 @@ export function UserAuthForm() {
               disabled={isLoading}
             />
           </div>
-          <Button type="submit" disabled={isLoading}>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="g-recaptcha"
+            data-sitekey={siteKey}
+            data-callback="onsubmit"
+          >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isSigningUp ? 'Sign Up with Email' : 'Sign In with Email'}
           </Button>
