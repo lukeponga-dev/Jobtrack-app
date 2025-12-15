@@ -9,7 +9,8 @@
     "build": "NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "gcloud auth application-default login"
   },
   "dependencies": {
     "@google-cloud/recaptcha-enterprise": "^5.3.0",

@@ -29,9 +29,11 @@ declare global {
 async function executeRecaptcha(action: string): Promise<string> {
   return new Promise((resolve, reject) => {
     if (!siteKey || !window.grecaptcha || !window.grecaptcha.enterprise) {
+      // It's possible grecaptcha hasn't loaded yet.
       return reject(new Error('reCAPTCHA not initialized'));
     }
 
+    // The ready() function accepts a callback to be executed when the recaptcha library is ready.
     window.grecaptcha.enterprise.ready(() => {
       window.grecaptcha.enterprise
         .execute(siteKey, { action })
@@ -39,6 +41,7 @@ async function executeRecaptcha(action: string): Promise<string> {
           resolve(token);
         })
         .catch((err: any) => {
+          // This will catch errors during the execute call.
           reject(err);
         });
     });
