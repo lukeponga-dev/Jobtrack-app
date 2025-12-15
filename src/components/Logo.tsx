@@ -14,8 +14,8 @@ export function Logo() {
           strokeLinejoin="round"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L8.6 3.3a2 2 0 0 0-1.7-.9H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"></path>
+          <path d="m9 13 2 2 4-4"></path>
         </svg>
       </div>
       <span className="font-headline">JobTrack</span>
