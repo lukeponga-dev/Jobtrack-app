@@ -10,8 +10,7 @@
     "build": "NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit",
-    "postinstall": "gcloud auth application-default login"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     

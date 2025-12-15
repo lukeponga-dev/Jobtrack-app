@@ -60,7 +60,6 @@ export function ApplicationStatusChart({ applications }: { applications: Applica
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-64 w-full">
-          <ResponsiveContainer>
             <BarChart
               data={chartData}
               margin={{
@@ -84,7 +83,6 @@ export function ApplicationStatusChart({ applications }: { applications: Applica
               <Tooltip cursor={{fill: 'hsl(var(--muted))'}} content={<ChartTooltipContent />} />
               <Bar dataKey="count" radius={4} />
             </BarChart>
-          </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
     </Card>

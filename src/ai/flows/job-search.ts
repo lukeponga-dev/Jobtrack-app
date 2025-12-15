@@ -43,8 +43,8 @@ const jobSearchPrompt = ai.definePrompt({
   name: 'jobSearchPrompt',
   input: {schema: JobSearchInputSchema},
   output: {schema: JobSearchOutputSchema},
-  model: googleAI.model('gemini-1.5-flash-latest'),
-  prompt: `You are a helpful job search assistant. Your task is to generate a list of 10 fictional job postings based on the user's search query.
+  model: googleAI.model('gemini-1.5-pro-latest'),
+  prompt: `You are a helpful job search assistant. Your task is to generate a list of 10 fictional job postings based on the user\'s search query.
 
 For each job posting, you must provide a title, company name, location, a short description (2-3 sentences), and a placeholder URL to a fictional job posting page.
 
