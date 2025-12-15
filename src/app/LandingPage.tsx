@@ -48,12 +48,12 @@ export default function LandingPage() {
           </div>
           <div className="relative mt-12 w-full max-w-4xl">
              <Image
-                src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxqb2IlMjBzZWFyY2glMjBvcmdhbml6YXRpb258ZW58MHx8fHwxNzE4NzU0MDIwfDA&ixlib=rb-4.1.0&q=80&w=1080"
+                src="https://images.unsplash.com/photo-1653038417332-6db0ff9d4bfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxKb2IlMjBBcHBsaWNhdGlvbnxlbnwwfHx8fDE3NjU4MDQzNzN8MA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="JobTrack Dashboard Screenshot"
                 width={1200}
                 height={600}
                 className="rounded-xl border shadow-2xl"
-                data-ai-hint="job search organization"
+                data-ai-hint="Job Applications"
               />
                <div className="absolute -bottom-4 -right-4 -left-4 h-full rounded-xl bg-primary/10 -z-10" />
           </div>
