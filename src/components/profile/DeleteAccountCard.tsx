@@ -24,11 +24,7 @@ import { Button } from '../ui/button';
 import { useFirebase } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import {
-  deleteUser,
-  reauthenticateWithPopup,
-  GoogleAuthProvider,
-} from 'firebase/auth';
+import { deleteUser } from 'firebase/auth';
 import {
   collection,
   deleteDoc,
@@ -77,10 +73,6 @@ export function DeleteAccountCard() {
     setIsDeleting(true);
 
     try {
-      // Re-authentication for security
-      const provider = new GoogleAuthProvider();
-      await reauthenticateWithPopup(user, provider);
-
       // Delete Firestore data
       await deleteUserSubcollections(firestore, user.uid);
       await deleteUserDocument(firestore, user.uid);

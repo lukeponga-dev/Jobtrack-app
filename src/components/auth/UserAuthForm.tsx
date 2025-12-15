@@ -16,9 +16,7 @@ import {
 import { useToast } from '../../hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { recaptchaVerify } from '@/ai/flows/recaptcha-verify';
-
-const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!;
+import { recaptchaVerifyFlow } from '@/ai/flows/recaptcha-verify';
 
 declare global {
   interface Window {
@@ -26,24 +24,18 @@ declare global {
   }
 }
 
+const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string;
+
 async function executeRecaptcha(action: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    if (!siteKey || !window.grecaptcha || !window.grecaptcha.enterprise) {
-      // It's possible grecaptcha hasn't loaded yet.
-      return reject(new Error('reCAPTCHA not initialized'));
+    if (!window.grecaptcha) {
+      reject(new Error("reCAPTCHA script not loaded"));
+      return;
     }
-
-    // The ready() function accepts a callback to be executed when the recaptcha library is ready.
     window.grecaptcha.enterprise.ready(() => {
-      window.grecaptcha.enterprise
-        .execute(siteKey, { action })
-        .then((token: string) => {
-          resolve(token);
-        })
-        .catch((err: any) => {
-          // This will catch errors during the execute call.
-          reject(err);
-        });
+      window.grecaptcha.enterprise.execute(siteKey, { action })
+        .then(resolve)
+        .catch(reject);
     });
   });
 }
@@ -73,34 +65,25 @@ export function UserAuthForm() {
   const { toast } = useToast();
   const router = useRouter();
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
+  const handleAuthAction = async (authFunction: () => Promise<any>) => {
     if (!auth) return;
-
     setIsLoading(true);
-
     try {
       const action = isSigningUp ? 'SIGNUP' : 'LOGIN';
-      const token = await executeRecaptcha(action);
-      const verification = await recaptchaVerify({
-        token,
+      const recaptchaToken = await executeRecaptcha(action);
+
+      const { valid } = await recaptchaVerifyFlow({
+        token: recaptchaToken,
         expectedAction: action,
       });
 
-      if (!verification.valid || (verification.score ?? 0) < 0.5) {
-        throw new Error(`reCAPTCHA verification failed: ${verification.invalidReason || 'low score'}`);
+      if (!valid) {
+        throw new Error('reCAPTCHA verification failed. Please try again.');
       }
-
-      const form = event.target as HTMLFormElement;
-      const email = (form.elements.namedItem('email') as HTMLInputElement).value;
-      const password = (form.elements.namedItem('password') as HTMLInputElement).value;
-
-      if (isSigningUp) {
-        await createUserWithEmailAndPassword(auth, email, password);
-      } else {
-        await signInWithEmailAndPassword(auth, email, password);
-      }
+      
+      await authFunction();
       router.push('/dashboard');
+
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -112,40 +95,33 @@ export function UserAuthForm() {
     }
   }
 
+  async function onSubmit(event: React.SyntheticEvent) {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+    
+    await handleAuthAction(async () => {
+      if (isSigningUp) {
+        await createUserWithEmailAndPassword(auth!, email, password);
+      } else {
+        await signInWithEmailAndPassword(auth!, email, password);
+      }
+    });
+  }
+
   const handleGoogleSignIn = async () => {
-    if (!auth) return;
-    setIsLoading(true);
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      router.push('/dashboard');
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Google Sign-In Failed',
-        description: error.message,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    await handleAuthAction(async () => {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth!, provider);
+    });
   };
 
   const handleGithubSignIn = async () => {
-    if (!auth) return;
-    setIsLoading(true);
-    try {
-      const provider = new GithubAuthProvider();
-      await signInWithPopup(auth, provider);
-      router.push('/dashboard');
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'GitHub Sign-In Failed',
-        description: error.message,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    await handleAuthAction(async () => {
+        const provider = new GithubAuthProvider();
+        await signInWithPopup(auth!, provider);
+    });
   };
 
   if (!auth) {
