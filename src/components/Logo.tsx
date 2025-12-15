@@ -14,7 +14,9 @@ export function Logo() {
           strokeLinejoin="round"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M9 18V5l7 4-7 4" />
+          <path d="M3 3v18h18" />
+          <path d="M7 17V7h10v10" />
+          <path d="M12 12.5v-5.5" />
         </svg>
       </div>
       <span className="font-headline">JobTrack</span>
