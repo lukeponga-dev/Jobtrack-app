@@ -9,6 +9,7 @@ import './flows/cover-letter-generation';
 import './flows/resume-feedback';
 import './flows/job-search';
 import './flows/email-parser';
+import './flows/recaptcha-verify';
 
 export default genkit({
     plugins: [

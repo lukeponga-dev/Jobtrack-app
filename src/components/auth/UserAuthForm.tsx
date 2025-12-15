@@ -16,8 +16,34 @@ import {
 import { useToast } from '../../hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { recaptchaVerify } from '@/ai/flows/recaptcha-verify';
 
 const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!;
+
+declare global {
+  interface Window {
+    grecaptcha: any;
+  }
+}
+
+async function executeRecaptcha(action: string): Promise<string> {
+  if (!siteKey || !window.grecaptcha) {
+    throw new Error('reCAPTCHA not initialized');
+  }
+
+  return new Promise((resolve, reject) => {
+    window.grecaptcha.enterprise.ready(() => {
+      window.grecaptcha.enterprise
+        .execute(siteKey, { action })
+        .then((token: string) => {
+          resolve(token);
+        })
+        .catch((err: any) => {
+          reject(err);
+        });
+    });
+  });
+}
 
 const GoogleIcon = () => (
   <svg role="img" viewBox="0 0 24 24" className="mr-2 h-4 w-4">
@@ -44,32 +70,27 @@ export function UserAuthForm() {
   const { toast } = useToast();
   const router = useRouter();
 
-  React.useEffect(() => {
-    (window as any).onsubmit = (token: string) => {
-      console.log('reCAPTCHA token:', token);
-      // Here you would typically send the token to your backend for verification
-      // and then proceed with the form submission.
-      const form = document.getElementById('auth-form') as HTMLFormElement;
-      if (form) {
-        // Manually trigger the form's onSubmit handler
-         const event = new Event('submit', { bubbles: true, cancelable: true });
-         form.dispatchEvent(event);
-      }
-    };
-  }, []);
-
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     if (!auth) return;
 
     setIsLoading(true);
 
-    const form = event.target as HTMLFormElement;
-    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
-    const password = (form.elements.namedItem('password') as HTMLInputElement)
-      .value;
-
     try {
+      const token = await executeRecaptcha(isSigningUp ? 'SIGNUP' : 'LOGIN');
+      const verification = await recaptchaVerify({
+        token,
+        recaptchaAction: isSigningUp ? 'SIGNUP' : 'LOGIN',
+      });
+
+      if (!verification.valid || (verification.score ?? 0) < 0.5) {
+        throw new Error(`reCAPTCHA verification failed: ${verification.invalidReason || 'low score'}`);
+      }
+
+      const form = event.target as HTMLFormElement;
+      const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+      const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+
       if (isSigningUp) {
         await createUserWithEmailAndPassword(auth, email, password);
       } else {
@@ -160,9 +181,6 @@ export function UserAuthForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="g-recaptcha"
-            data-sitekey={siteKey}
-            data-callback="onsubmit"
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isSigningUp ? 'Sign Up with Email' : 'Sign In with Email'}
