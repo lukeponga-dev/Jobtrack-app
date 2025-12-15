@@ -1,3 +1,4 @@
+
 'use server';
 
 import { ai } from '@/ai/genkit';
@@ -6,7 +7,7 @@ import { RecaptchaEnterpriseServiceClient } from '@google-cloud/recaptcha-enterp
 
 const RecaptchaVerifyInputSchema = z.object({
   token: z.string(),
-  recaptchaAction: z.string(),
+  expectedAction: z.string(),
 });
 export type RecaptchaVerifyInput = z.infer<typeof RecaptchaVerifyInputSchema>;
 
@@ -31,12 +32,13 @@ const recaptchaVerifyFlow = ai.defineFlow(
     inputSchema: RecaptchaVerifyInputSchema,
     outputSchema: RecaptchaVerifyOutputSchema,
   },
-  async ({ token, recaptchaAction }) => {
+  async ({ token, expectedAction }) => {
     const projectID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
     const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
     if (!projectID || !recaptchaKey) {
-      throw new Error('Missing reCAPTCHA environment variables.');
+      console.error('Missing reCAPTCHA environment variables: NEXT_PUBLIC_FIREBASE_PROJECT_ID or NEXT_PUBLIC_RECAPTCHA_SITE_KEY');
+      throw new Error('Server is not configured for reCAPTCHA verification.');
     }
 
     const client = new RecaptchaEnterpriseServiceClient();
@@ -47,6 +49,7 @@ const recaptchaVerifyFlow = ai.defineFlow(
         event: {
           token: token,
           siteKey: recaptchaKey,
+          expectedAction: expectedAction
         },
       },
       parent: projectPath,
@@ -62,20 +65,17 @@ const recaptchaVerifyFlow = ai.defineFlow(
         return { score: null, valid: false, invalidReason: response.tokenProperties?.invalidReason?.toString() };
       }
 
-      if (response.tokenProperties.action === recaptchaAction) {
-        console.log(
-          `The reCAPTCHA score is: ${response.riskAnalysis?.score}`
-        );
-        return { score: response.riskAnalysis?.score ?? null, valid: true };
-      } else {
-        console.log(
-          'The action attribute in your reCAPTCHA tag does not match the action you are expecting to score'
-        );
-        return { score: null, valid: false, invalidReason: 'action_mismatch' };
-      }
+      // The API automatically checks if the expectedAction matches the action from the client.
+      // If they don't match, `response.tokenProperties.valid` will be false with `invalidReason: "ACTION_MISMATCH"`.
+      // So, we just need to check the 'valid' property.
+      console.log(
+        `The reCAPTCHA score is: ${response.riskAnalysis?.score}`
+      );
+      return { score: response.riskAnalysis?.score ?? null, valid: true };
+
     } catch (error) {
-      console.error("Error creating assessment:", error);
-      throw error;
+      console.error("Error creating reCAPTCHA assessment:", error);
+      throw new Error('Could not verify reCAPTCHA token.');
     }
   }
 );

@@ -27,11 +27,11 @@ declare global {
 }
 
 async function executeRecaptcha(action: string): Promise<string> {
-  if (!siteKey || !window.grecaptcha) {
-    throw new Error('reCAPTCHA not initialized');
-  }
-
   return new Promise((resolve, reject) => {
+    if (!siteKey || !window.grecaptcha || !window.grecaptcha.enterprise) {
+      return reject(new Error('reCAPTCHA not initialized'));
+    }
+
     window.grecaptcha.enterprise.ready(() => {
       window.grecaptcha.enterprise
         .execute(siteKey, { action })
@@ -77,10 +77,11 @@ export function UserAuthForm() {
     setIsLoading(true);
 
     try {
-      const token = await executeRecaptcha(isSigningUp ? 'SIGNUP' : 'LOGIN');
+      const action = isSigningUp ? 'SIGNUP' : 'LOGIN';
+      const token = await executeRecaptcha(action);
       const verification = await recaptchaVerify({
         token,
-        recaptchaAction: isSigningUp ? 'SIGNUP' : 'LOGIN',
+        expectedAction: action,
       });
 
       if (!verification.valid || (verification.score ?? 0) < 0.5) {
