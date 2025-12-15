@@ -51,39 +51,53 @@ export function UserAuthForm() {
   const { toast } = useToast();
   const router = useRouter();
 
-  const executeRecaptcha = async (action: string): Promise<string | null> => {
-    if (!window.grecaptcha || !siteKey) {
-      toast({
-        variant: 'destructive',
-        title: 'reCAPTCHA not loaded',
-        description:
-          'Please check your connection or ad-blocker and try again.',
-      });
-      return null;
-    }
-
-    try {
-      await window.grecaptcha.enterprise.ready();
-      const token = await window.grecaptcha.enterprise.execute(siteKey, {
-        action,
-      });
-      const result = await verifyRecaptcha({
-        token,
-        recaptchaAction: action,
-      });
-      if (!result.isValid) {
-        throw new Error('reCAPTCHA verification failed.');
+  const executeRecaptcha = (action: string): Promise<string | null> => {
+    return new Promise((resolve) => {
+      if (!window.grecaptcha || !siteKey) {
+        toast({
+          variant: 'destructive',
+          title: 'reCAPTCHA not loaded',
+          description:
+            'Please check your connection or ad-blocker and try again.',
+        });
+        resolve(null);
+        return;
       }
-      return token;
-    } catch (error) {
-      console.error('reCAPTCHA execution error:', error);
-      toast({
-        variant: 'destructive',
-        title: 'reCAPTCHA Error',
-        description: 'Could not verify you are human. Please try again.',
-      });
-      return null;
-    }
+
+      try {
+        window.grecaptcha.enterprise.ready(async () => {
+          try {
+            const token = await window.grecaptcha.enterprise.execute(siteKey, {
+              action,
+            });
+            const result = await verifyRecaptcha({
+              token,
+              recaptchaAction: action,
+            });
+            if (!result.isValid) {
+              throw new Error('reCAPTCHA verification failed.');
+            }
+            resolve(token);
+          } catch (error) {
+            console.error('reCAPTCHA execution error:', error);
+            toast({
+              variant: 'destructive',
+              title: 'reCAPTCHA Error',
+              description: 'Could not verify you are human. Please try again.',
+            });
+            resolve(null);
+          }
+        });
+      } catch (error) {
+        console.error('reCAPTCHA ready error:', error);
+        toast({
+          variant: 'destructive',
+          title: 'reCAPTCHA Error',
+          description: 'Could not initialize reCAPTCHA. Please try again.',
+        });
+        resolve(null);
+      }
+    });
   };
 
   async function onSubmit(event: React.SyntheticEvent) {
