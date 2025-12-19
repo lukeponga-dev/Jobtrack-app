@@ -63,7 +63,16 @@ AI features require a Google AI API key.
 
     You can obtain an API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
 
-### 3. Automatic Backend Provisioning
+### 3. Try the Live Demo
+
+To explore the app's features without creating an account, use the "Live Demo" button on the login page with the following pre-configured credentials:
+
+-   **Email:** `demo@jobtrack.com`
+-   **Password:** `demo123`
+
+*Note: The demo account has read-only permissions for sample data. You cannot edit or delete the pre-populated job applications, but you can add your own.*
+
+### 4. Automatic Backend Provisioning
 
 Firebase Studio automatically handles the backend setup:
 
