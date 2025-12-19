@@ -34,6 +34,9 @@ import {
 } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 
+const DEMO_USER_ID = "mbjXKwJmpuNOCqW5CBBNi2Ppu1P2";
+
+
 async function deleteUserSubcollections(firestore: any, userId: string) {
   const subcollections = ['applications', 'resumeFeedback', 'coverLetters'];
   for (const subcollection of subcollections) {
@@ -69,6 +72,15 @@ export function DeleteAccountCard() {
       });
       return;
     }
+    
+    if (user.uid === DEMO_USER_ID) {
+      toast({
+        title: 'Demo Account Restriction',
+        description: 'The demo account cannot be deleted.',
+      });
+      return;
+    }
+
 
     setIsDeleting(true);
 

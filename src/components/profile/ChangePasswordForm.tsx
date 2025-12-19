@@ -30,6 +30,9 @@ const formSchema = z.object({
   path: ['confirmPassword'],
 });
 
+const DEMO_USER_ID = "mbjXKwJmpuNOCqW5CBBNi2Ppu1P2";
+
+
 export function ChangePasswordForm() {
   const { user } = useFirebase();
   const { toast } = useToast();
@@ -46,6 +49,15 @@ export function ChangePasswordForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user) return;
+    
+    if (user.uid === DEMO_USER_ID) {
+      toast({
+        title: 'Demo Account Restriction',
+        description: 'Changing the password for the demo account is not allowed.',
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       await updatePassword(user, values.newPassword);
