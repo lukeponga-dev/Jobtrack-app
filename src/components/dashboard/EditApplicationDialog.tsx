@@ -55,6 +55,9 @@ type EditApplicationDialogProps = {
   application: Application | null;
 };
 
+const DEMO_USER_ID = "mbjXKwJmpuNOCqW5CBBNi2Ppu1P2";
+
+
 export function EditApplicationDialog({ open, onOpenChange, application }: EditApplicationDialogProps) {
   const { toast } = useToast();
   const { firestore, user } = useFirebase();
@@ -83,6 +86,16 @@ export function EditApplicationDialog({ open, onOpenChange, application }: EditA
         title: 'Error',
         description: 'Invalid request. Please try again.',
       });
+      return;
+    }
+
+    if (user.uid === DEMO_USER_ID) {
+      toast({
+        title: 'Demo Account Restriction',
+        description: 'Editing sample applications is disabled in demo mode.',
+        variant: 'default',
+      });
+      onOpenChange(false);
       return;
     }
 

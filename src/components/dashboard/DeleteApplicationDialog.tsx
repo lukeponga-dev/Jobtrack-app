@@ -9,18 +9,37 @@ import {
   AlertDialogTitle,
 } from '../ui/alert-dialog';
 import { Button } from '../ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 type DeleteApplicationDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
+  isDemoUser?: boolean;
 };
 
 export function DeleteApplicationDialog({
   open,
   onOpenChange,
   onConfirm,
+  isDemoUser
 }: DeleteApplicationDialogProps) {
+
+  const { toast } = useToast();
+
+  const handleConfirm = () => {
+    if (isDemoUser) {
+      toast({
+        title: 'Demo Account Restriction',
+        description: 'Deleting sample applications is disabled in demo mode.',
+        variant: 'default',
+      });
+      onOpenChange(false);
+      return;
+    }
+    onConfirm();
+  }
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -34,7 +53,7 @@ export function DeleteApplicationDialog({
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction asChild>
-            <Button onClick={onConfirm} variant="destructive">
+            <Button onClick={handleConfirm} variant="destructive">
               Delete
             </Button>
           </AlertDialogAction>

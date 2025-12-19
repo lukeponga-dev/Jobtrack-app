@@ -34,6 +34,8 @@ const statusTabs: {value: ApplicationStatus | 'all'; label: string}[] = [
   {value: 'rejected', label: 'Rejected'},
 ];
 
+const DEMO_USER_ID = "mbjXKwJmpuNOCqW5CBBNi2Ppu1P2";
+
 export default function ApplicationsClient({
   applications,
   activeTab,
@@ -78,18 +80,39 @@ export default function ApplicationsClient({
       );
   }, [applications, activeTab, searchTerm]);
 
+  const showDemoRestrictionToast = () => {
+    toast({
+      title: 'Demo Account Restriction',
+      description: 'Editing or deleting sample applications is disabled in demo mode.',
+      variant: 'default',
+    });
+  }
+
   const handleDeleteClick = (application: Application) => {
+    if (user?.uid === DEMO_USER_ID) {
+      showDemoRestrictionToast();
+      return;
+    }
     setApplicationToDelete(application);
     setIsDeleteDialogOpen(true);
   };
   
   const handleEditClick = (application: Application) => {
+    if (user?.uid === DEMO_USER_ID) {
+      showDemoRestrictionToast();
+      return;
+    }
     setApplicationToEdit(application);
     setIsEditDialogOpen(true);
   };
 
   const handleDeleteConfirm = () => {
     if (!firestore || !user || !applicationToDelete) return;
+     if (user.uid === DEMO_USER_ID) {
+      showDemoRestrictionToast();
+      setIsDeleteDialogOpen(false);
+      return;
+    }
 
     const docRef = doc(
       firestore,
@@ -244,6 +267,7 @@ export default function ApplicationsClient({
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         onConfirm={handleDeleteConfirm}
+        isDemoUser={user?.uid === DEMO_USER_ID}
       />
       {applicationToEdit && (
         <EditApplicationDialog
