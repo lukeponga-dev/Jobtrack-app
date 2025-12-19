@@ -15,7 +15,7 @@ import {
   GithubAuthProvider,
 } from 'firebase/auth';
 import { useToast } from '../../hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, PlayCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const GoogleIcon = () => (
@@ -86,6 +86,12 @@ export function UserAuthForm() {
     await handleAuthAction(async () => {
         const provider = new GithubAuthProvider();
         await signInWithPopup(auth!, provider);
+    });
+  };
+
+  const handleDemoLogin = async () => {
+    await handleAuthAction(async () => {
+      await signInWithEmailAndPassword(auth!, 'demo@jobtrack.com', 'demo123');
     });
   };
 
@@ -172,6 +178,29 @@ export function UserAuthForm() {
           <GithubIcon /> GitHub
         </Button>
       </div>
+       <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or
+          </span>
+        </div>
+      </div>
+      <Button
+        variant="secondary"
+        type="button"
+        disabled={isLoading}
+        onClick={handleDemoLogin}
+      >
+        {isLoading ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <PlayCircle className="mr-2 h-4 w-4" />
+        )}
+        Live Demo
+      </Button>
     </div>
   );
 }
