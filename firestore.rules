@@ -77,7 +77,7 @@ service cloud.firestore {
       allow list: if false;
       allow create: if isOwner(userId) && request.resource.data.id == userId;
       allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-      allow delete: if isExistingOwner(userId);
+      allow delete: if isOwner(userId);
     }
 
     /**
@@ -93,7 +93,7 @@ service cloud.firestore {
       allow list: if isOwner(userId);
       allow create: if isOwner(userId) && request.resource.data.userId == userId;
       allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
-      allow delete: if isExistingOwner(userId);
+      allow delete: if isOwner(userId);
     }
 
     /**
@@ -109,7 +109,7 @@ service cloud.firestore {
       allow list: if isOwner(userId);
       allow create: if isOwner(userId) && request.resource.data.userId == userId;
       allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
-      allow delete: if isExistingOwner(userId);
+      allow delete: if isOwner(userId);
     }
 
     /**
@@ -125,7 +125,7 @@ service cloud.firestore {
       allow list: if isOwner(userId);
       allow create: if isOwner(userId) && request.resource.data.userId == userId;
       allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
-      allow delete: if isExistingOwner(userId);
+      allow delete: if isOwner(userId);
     }
 
   }
