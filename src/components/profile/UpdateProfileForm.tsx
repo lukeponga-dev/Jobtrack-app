@@ -27,6 +27,9 @@ const formSchema = z.object({
   email: z.string().email(),
 });
 
+const DEMO_USER_ID = "mbjXKwJmpuNOCqW5CBBNi2Ppu1P2";
+
+
 export function UpdateProfileForm() {
   const { user, auth } = useFirebase();
   const { toast } = useToast();
@@ -49,8 +52,19 @@ export function UpdateProfileForm() {
     }
   }, [user, form]);
 
+  const isDemoUser = user?.uid === DEMO_USER_ID;
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user) return;
+
+    if (isDemoUser) {
+      toast({
+        title: 'Demo Account Restriction',
+        description: 'Updating the demo account profile is not allowed.',
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       await updateProfile(user, {
@@ -87,7 +101,7 @@ export function UpdateProfileForm() {
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your name" {...field} />
+                    <Input placeholder="Your name" {...field} disabled={isLoading || isDemoUser} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,13 +117,16 @@ export function UpdateProfileForm() {
                     <Input placeholder="Your email" {...field} disabled />
                   </FormControl>
                   <FormDescription>
-                    Your email address cannot be changed.
+                    {isDemoUser 
+                      ? 'The demo account profile cannot be modified.' 
+                      : 'Your email address cannot be changed.'
+                    }
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading || isDemoUser}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Save Changes
             </Button>
